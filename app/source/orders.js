@@ -1025,7 +1025,8 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             {
                 xtype: 'toolbar',
                 docked: 'top',
-                items: [ this.viewDetailsButton, this.viewMapDirectionsButton, {
+                // TODO: Enable directions button: , this.viewMapDirectionsButton
+                items: [ this.viewDetailsButton, {
                     type: 'button',
                     text: 'Create new order',
                     handler: function() { this.createNewOrderWindow(); }.bind( this )
