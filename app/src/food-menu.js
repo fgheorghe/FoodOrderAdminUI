@@ -280,13 +280,12 @@ FOBO.ui.prototype.foodMenu.prototype.createPanel = function() {
                 editable: false,
                 allowBlank: false
             },  dataIndex: 'category_id', flex: 1, renderer: function( value ) {
-                var categoryName = "n/a";
                 for ( var i = 0; i < Common.FoodMenu.MenuItemCategories.length; i++ ) {
                     if ( Common.FoodMenu.MenuItemCategories[i].id === value ) {
-                        categoryName = Common.FoodMenu.MenuItemCategories[i].category_name;
+                        return Common.FoodMenu.MenuItemCategories[i].category_name;
                     }
                 }
-                return categoryName;
+                return "n/a";
             } },
             { header: 'Number',field: { xtype: 'textfield' },  dataIndex: 'item_number', width: 80 },
             { header: 'Name',field: { xtype: 'textfield' },  dataIndex: 'item_name', flex: 1 },
@@ -301,13 +300,12 @@ FOBO.ui.prototype.foodMenu.prototype.createPanel = function() {
                 editable: false,
                 allowBlank: false
             }, renderer: function( value ) {
-                var sizeName = "n/a";
                 for ( var i = 0; i < Common.FoodMenu.MenuItemSizes.length; i++ ) {
                     if ( Common.FoodMenu.MenuItemSizes[i].id === value ) {
-                        sizeName = Common.FoodMenu.MenuItemSizes[i].size_name;
+                        return Common.FoodMenu.MenuItemSizes[i].size_name;
                     }
                 }
-                return sizeName;
+                return "n/a";
             } },
             { header: 'Price', dataIndex: 'price', field: { xtype: 'numberfield', value: 1, minValue: 1 } }
         ],
