@@ -47,7 +47,7 @@ FOBO.ui.prototype.eosr.prototype.init = function() {
             url:'/api/orders/',
             reader:{
                 type: 'json',
-                root:'items',
+                root:'data',
             },
             filterParam: undefined,
             groupParam: undefined,

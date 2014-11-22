@@ -42,7 +42,7 @@ FOBO.ui.prototype.foodMenu.prototype.createStore = function() {
             url:'/api/menu-items/',
             reader:{
                 type: 'json',
-                root:'items'
+                root:'data'
             }
         }
     } );

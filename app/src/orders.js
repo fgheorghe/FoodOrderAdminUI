@@ -23,7 +23,7 @@ FOBO.ui.prototype.orders.prototype.createOrderWindowStore = function() {
             url:'/api/menu-items/',
             reader:{
                 type: 'json',
-                root:'items'
+                root:'data'
             }
         }
     } );
@@ -428,7 +428,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             url:'/api/customers/',
             reader:{
                 type: 'json',
-                root:'items',
+                root:'data',
                 totalProperty: 'total'
             }
         }
@@ -852,7 +852,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             url:'/api/orders/',
             reader:{
                 type: 'json',
-                root:'items',
+                root:'data',
                 totalProperty: 'total'
             }
         }

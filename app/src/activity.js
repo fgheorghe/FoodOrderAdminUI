@@ -25,10 +25,10 @@ FOBO.ui.prototype.activity.prototype.createStore = function() {
         fields:[ 'id', { name: 'date_time', type: 'date' }, 'ip_address', 'requested_service_name', 'request_data' ],
         proxy:{
             type:'rest',
-            url:'/api/activity/',
+            url:'/api/printer-activity/',
             reader:{
                 type: 'json',
-                root:'items'
+                root:'data'
             }
         }
     } );

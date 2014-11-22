@@ -34,7 +34,7 @@ FOBO.ui.prototype.customerDatabase.prototype.createStore = function() {
             url:'/api/customers/',
             reader:{
                 type: 'json',
-                root:'items'
+                root:'data'
             }
         }
     } );
