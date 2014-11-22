@@ -214,7 +214,6 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             this.notesField.setValue( order.notes );
 
             // Select grid items.
-            // TODO: Do it in the backend.
             for ( ; i < order.items.length; i++ ) {
                 ids[order.items[i].menu_item_id] = true;
             }
