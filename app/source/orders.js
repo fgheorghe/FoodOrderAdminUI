@@ -613,11 +613,12 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                         ,selections = sm.getSelection()
                         ,i
                         ,url = order ? '/api/order/' + order.id : '/api/order/'
-                        ,method = order ? 'PUT' : 'POST';
+                        ,method = 'POST';
 
                     for ( i = 0; i < selections.length; i++ ) {
                         orderItems.push( {
                             id: selections[i].raw.id
+                            ,size_id: selections[i].raw.size_id
                             ,count: 1
                         } );
                     }
@@ -625,8 +626,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                     Ext.Ajax.request({
                         url: url,
                         method: method,
-                        jsonData: {
-                            items: orderItems
+                        params: {
+                            items: Ext.JSON.encode(orderItems)
                             ,address: this.addressField.getValue()
                             ,notes: this.notesField.getValue()
                             ,order_type: this.orderTypeCombo.getValue()
