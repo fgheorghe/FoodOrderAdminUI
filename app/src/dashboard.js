@@ -20,51 +20,63 @@ FOBO.ui.prototype.dashboard.prototype.init = function() {
         title: 'Dashboard',
         layout: {
             type: 'vbox',
-            align : 'stretch',
-            pack  : 'start'
+            pack: 'start',
+            align: 'stretch'
         },
         items: [
             Ext.create( 'Ext.panel.Panel', {
-                layout: 'column',
-                bodyPadding: 5,
-                border: false,
+                layout: {
+                    type: 'hbox',
+                    pack: 'start',
+                    align: 'stretch'
+                },
+                flex: 1,
                 frame: false,
-                items: [ {
-                    title: 'Monthly Visitors',
-                    columnWidth: .5,
-                    margin: 5,
-                    layout: 'fit',
-                    height: 420,
-                    items: [ this.chart3 ]
-                }, {
-                    title: 'Monthly Orders',
-                    columnWidth: .5,
-                    margin: 5,
-                    layout: 'fit',
-                    height: 420,
-                    items: [ this.chart4 ]
-                } ]
+                border: false,
+                margin: 5,
+                items: [
+                    Ext.create( 'Ext.panel.Panel', {
+                            title: 'Monthly Visitors',
+                            margin: 5,
+                            layout: 'fit',
+                            flex: 1,
+                            items: [ this.chart3 ]
+                    } ),
+                    Ext.create( 'Ext.panel.Panel', {
+                            title: 'Monthly Orders',
+                            margin: 5,
+                            layout: 'fit',
+                            flex: 1,
+                            items: [ this.chart4 ]
+                    } )
+                ]
             } ),
             Ext.create( 'Ext.panel.Panel', {
-                layout: 'column',
-                bodyPadding: 5,
-                border: false,
                 frame: false,
-                items: [ {
-                    title: 'Top 3 Selling Products - Monthly',
-                    columnWidth: .5,
-                    margin: 5,
-                    layout: 'fit',
-                    height: 420,
-                    items: [ this.chart ]
-                }, {
-                    title: 'Top 3 Post Codes - Monthly',
-                    columnWidth: .5,
-                    margin: 5,
-                    layout: 'fit',
-                    height: 420,
-                    items: [ this.chart2 ]
-                } ]
+                border: false,
+                margin: 5,
+                flex: 1,
+                layout: {
+                    type: 'hbox',
+                    pack: 'start',
+                    align: 'stretch'
+                },
+                items: [
+                    Ext.create( 'Ext.panel.Panel', {
+                            title: 'Top 3 Selling Products - Monthly',
+                            margin: 5,
+                            layout: 'fit',
+                            flex: 1,
+                            items: [ this.chart ]
+                    } ),
+                    Ext.create( 'Ext.panel.Panel', {
+                            title: 'Top 3 Post Codes - Monthly',
+                            margin: 5,
+                            layout: 'fit',
+                            flex: 1,
+                            items: [ this.chart2 ]
+                    } )
+                ]
             } )
         ]
     } );
