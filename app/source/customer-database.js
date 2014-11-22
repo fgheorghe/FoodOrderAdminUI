@@ -58,12 +58,16 @@ FOBO.ui.prototype.customerDatabase.prototype.init = function() {
         text: 'Verify',
         disabled: true,
         handler: function() {
-            var selection = this.panel.getView().getSelectionModel().getSelection();
+            var selection = this.panel.getView().getSelectionModel().getSelection(),
+                url = "/api/customer/" +
+                    (selection[0].raw.verified === 0 ? "verify" : "unverify" ) +
+                    "/" +
+                    selection[0].raw.id;
 
             if ( selection.length === 1 ) {
                 Ext.Ajax.request({
-                    url: "/api/customer/verify/" + selection[0].raw.id + "/" + ( selection[0].raw.verified === 1 ? 0 : 1 ),
-                    method: "PUT",
+                    url: url,
+                    method: "POST",
                     success: function(response, opts) {
                         this.refreshData();
                         this.panel.getView().getSelectionModel().deselectAll();
@@ -91,7 +95,7 @@ FOBO.ui.prototype.customerDatabase.prototype.init = function() {
         title: 'Customer Database',
         store: this.store,
         columns: [
-            { header: 'Name', dataIndex: 'name', flex: 1 },
+            { header: 'Name', dataIndex: 'name', width: 180 },
             { header: 'Email Address', dataIndex: 'email', width: 180 },
             { header: 'Post Code', dataIndex: 'post_code', width: 180 },
             { header: 'Address', dataIndex: 'address', width: 200 },

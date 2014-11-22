@@ -140,13 +140,13 @@ FOBO.ui.prototype.orders.prototype.createAddCustomerWindow = function( customerI
         }, {
             text: customerId ? 'Save' : 'Add',
             handler: function() {
-                var method = customerId ? 'PUT' : 'POST',
+                var method = 'POST',
                     url = customerId ? '/api/customer/' + customerId : '/api/customer/';
                 if ( form.getForm().isValid() ) {
                     Ext.Ajax.request({
                         url: url,
                         method: method,
-                        jsonData: {
+                        params: {
                             name: customerNameField.getValue()
                             ,post_code: customerPostCodeField.getValue()
                             ,phone_number: customerPhoneNumberField.getValue()
@@ -437,7 +437,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
     this.addCustomerButton = Ext.create( 'Ext.button.Button', {
         xtype: 'button'
         ,text: 'Add Customer'
-        ,handler: this.createAddCustomerWindow.bind( this )
+        ,handler: function() { this.createAddCustomerWindow(); }.bind(this)
     } );
 
     this.editCustomerButton = Ext.create( 'Ext.button.Button', {
