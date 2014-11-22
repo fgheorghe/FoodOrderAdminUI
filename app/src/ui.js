@@ -60,8 +60,8 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
         case "settings":
             componentName = "settings";
             break;
-        case "activity":
-            componentName = "activity";
+        case "printer-activity":
+            componentName = "printerActivity";
             break;
         case "orders":
             componentName = "orders";
@@ -123,8 +123,8 @@ FOBO.ui.prototype.createMenuPanel = function() {
                 role: 'eosr',
                 leaf: true
             }, {
-                text: "Activity",
-                role: 'activity',
+                text: "Printer Activity",
+                role: 'printer-activity',
                 leaf: true
             }, {
                 text: "Settings",

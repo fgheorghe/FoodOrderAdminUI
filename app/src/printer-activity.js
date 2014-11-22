@@ -6,21 +6,21 @@
 /**
  * @constructors Class constructor.
  */
-FOBO.ui.prototype.activity = function() {
+FOBO.ui.prototype.printerActivity = function() {
     this.init();
 };
 
 /**
  * @function Reloads main panel data.
  */
-FOBO.ui.prototype.activity.prototype.refreshData = function() {
+FOBO.ui.prototype.printerActivity.prototype.refreshData = function() {
     this.panel.getStore().load();
 }
 
 /**
  * @function Creates data store for the main grid panel.
  */
-FOBO.ui.prototype.activity.prototype.createStore = function() {
+FOBO.ui.prototype.printerActivity.prototype.createStore = function() {
     this.store = Ext.create( 'Ext.data.JsonStore', {
         fields:[ 'id', { name: 'date_time', type: 'date' }, 'ip_address', 'requested_service_name', 'request_data' ],
         proxy:{
@@ -37,12 +37,12 @@ FOBO.ui.prototype.activity.prototype.createStore = function() {
 /**
  * @function Initializes this component.
  */
-FOBO.ui.prototype.activity.prototype.init = function() {
+FOBO.ui.prototype.printerActivity.prototype.init = function() {
     this.createStore();
 
     // Create grid panel
     this.panel = Ext.create('Ext.grid.Panel', {
-        title: 'Activity',
+        title: 'Printer Activity',
         store: this.store,
         columns: [
             { header: 'Date Time', dataIndex: 'date_time', width: 350 },
