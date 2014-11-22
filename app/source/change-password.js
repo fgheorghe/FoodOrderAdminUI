@@ -89,8 +89,8 @@ FOBO.ui.prototype.changePassword.prototype.submitFormData = function() {
 
     // Create AJAX request object, and send form data.
     Ext.Ajax.request({
-        url: '/api/users/change-password/',
-        method: 'PUT',
+        url: '/api/user/change-password/',
+        method: 'POST',
         params: {
             new_password: new_password,
             current_password: current_password
@@ -100,7 +100,7 @@ FOBO.ui.prototype.changePassword.prototype.submitFormData = function() {
             // Check if password update failed.
             try {
                 data = Ext.decode( response.responseText );
-                if ( data.error ) {
+                if ( typeof data.success === "undefined" || data.success !== true ) {
                     this.loadMask.hide();
                     Ext.Msg.alert('Error', "Can not update password - wrong current password.");
                     // Stop the process.
