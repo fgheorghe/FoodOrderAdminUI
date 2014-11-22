@@ -88,9 +88,9 @@ FOBO.ui.prototype.users.prototype.createChangeUserPasswordPrompt = function() {
                     };
 
                     Ext.Ajax.request({
-                        url: '/api/users/change-password/' + id,
-                        method: "PUT",
-                        jsonData: user,
+                        url: '/api/user/change-password/' + id,
+                        method: "POST",
+                        params: user,
                         success: function(response, opts) {
                             this.refreshData();
                             window.close();
@@ -137,7 +137,7 @@ FOBO.ui.prototype.users.prototype.createAddUserWindow = function() {
             tabIndex: 2
         }, {
             fieldLabel: 'Email Address',
-            name: 'email_address',
+            name: 'email',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 3
@@ -174,14 +174,14 @@ FOBO.ui.prototype.users.prototype.createAddUserWindow = function() {
                     var user = {
                         role_id: form.getForm().findField( 'role_id' ).getValue(),
                         name: form.getForm().findField( 'name' ).getValue(),
-                        email_address: form.getForm().findField( 'email_address' ).getValue(),
+                        email: form.getForm().findField( 'email' ).getValue(),
                         password: form.getForm().findField( 'password' ).getValue()
                     };
 
                     Ext.Ajax.request({
                         url: '/api/user/',
                         method: "POST",
-                        jsonData: user,
+                        params: user,
                         success: function(response, opts) {
                             var data;
                             // Check if user has been created
@@ -189,8 +189,8 @@ FOBO.ui.prototype.users.prototype.createAddUserWindow = function() {
                                 data = Ext.decode( response.responseText );
                                 if ( data.error ) {
                                     Ext.Msg.alert('Error', "Can not create user, email address already in database.");
-                                    form.getForm().findField( 'email_address' ).focus();
-                                    form.getForm().findField( 'email_address' ).markInvalid();
+                                    form.getForm().findField( 'email' ).focus();
+                                    form.getForm().findField( 'email' ).markInvalid();
                                     form.isValid();
                                     // Stop the process, until the user updates the email address.
                                     return;
@@ -223,18 +223,18 @@ FOBO.ui.prototype.users.prototype.createActivateDeactiveUserPrompt = function() 
         id = selection.raw.id,
         active = selection.raw.active_yn,
         // TODO: Make field name consistent.
-        email_address = selection.raw.email;
+        email = selection.raw.email;
 
     Ext.Msg.show( {
         title:'Confirm ' + ( active === 1 ? "deactivate" : "activate" ) + '?',
-        msg: ( active === 1 ? "Deactivate" : "Activate" ) + ' user ' + name + ' (' + email_address + ') ?',
+        msg: ( active === 1 ? "Deactivate" : "Activate" ) + ' user ' + name + ' (' + email + ') ?',
         buttons: Ext.Msg.YESNO,
         icon: Ext.Msg.WARNING,
         fn: function( btn ) {
             if ( btn === 'yes' ) {
                 Ext.Ajax.request({
-                    url: '/api/users/' + ( active === 1 ? "deactivate" : "activate" ) + '/' + id,
-                    method: "PUT",
+                    url: '/api/user/' + ( active === 1 ? "deactivate" : "activate" ) + '/' + id,
+                    method: "POST",
                     success: function(response, opts) {
                         this.panel.getSelectionModel().deselectAll();
                         // TODO: Add method for deactivating these buttons.
@@ -274,9 +274,9 @@ FOBO.ui.prototype.users.prototype.init = function() {
 
                 // TODO: Clean-up.
                 Ext.Ajax.request({
-                    url: '/api/users/change-role/' + event.record.raw.id,
-                    method: "PUT",
-                    jsonData: user,
+                    url: '/api/user/change-role/' + event.record.raw.id,
+                    method: "POST",
+                    params: user,
                     success: function(response, opts) {
                         this.refreshData();
                     }.bind( this ),
