@@ -42,7 +42,7 @@ FOBO.ui.prototype.foodMenu.prototype.createStore = function() {
             url:'/api/menu-items/',
             reader:{
                 type: 'json',
-                root:'data'
+                root: 'data'
             }
         }
     } );
@@ -131,7 +131,7 @@ FOBO.ui.prototype.foodMenu.prototype.createNewItemWindow = function() {
                     Ext.Ajax.request({
                         url: '/api/menu-item/',
                         method: "POST",
-                        jsonData: menuItem,
+                        params: menuItem,
                         success: function(response, opts) {
                             this.refreshData();
                             window.close();
@@ -242,8 +242,8 @@ FOBO.ui.prototype.foodMenu.prototype.createPanel = function() {
                 // TODO: Clean-up.
                 Ext.Ajax.request({
                     url: '/api/menu-item/' + event.record.raw.id,
-                    method: "PUT",
-                    jsonData: menuItem,
+                    method: "POST",
+                    params: menuItem,
                     success: function(response, opts) {
                         this.refreshData();
                         window.close();
