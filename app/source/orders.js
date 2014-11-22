@@ -241,7 +241,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
 
     this.searchFoodByNameAndCategory = function() {
         // Reload panel data.
-        grid.getStore().load( {
+        this.menuItemsGrid.getStore().load( {
             params: {
                 category_id: this.categoryComboSearch.getValue(),
                 item_name: this.foodNameSearchInput.getValue()
@@ -255,7 +255,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         this.foodNameSearchInput.setValue();
 
         // Reload panel data.
-        grid.getStore().load();
+        this.menuItemsGrid.getStore().load();
     }
 
     // Prepare input fields
@@ -725,7 +725,7 @@ FOBO.ui.prototype.orders.prototype.searchOrders = function() {
             customer_type: this.customerTypeSearchCombo.getValue(),
             payment_status: this.paymentStatusSearchCombo.getValue(),
             customer_name: this.customerNameSearchField.getValue(),
-            phone_number: this.phoneNumberSearchField.getValue()
+            customer_phone_number: this.phoneNumberSearchField.getValue()
         }
     } );
 }
