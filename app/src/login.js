@@ -18,8 +18,56 @@ FOBO.login = function( callback ) {
  * @function Method used for initializing the login object.
  */
 FOBO.login.prototype.init = function() {
+    // First, check if the user is logged in.
+    this.verifyLogin();
+}
+
+/**
+ * Shows the login ui.
+ * @function
+ */
+FOBO.login.prototype.showLoginUi = function() {
+    // Hide the verify mask, and let it be replaced by another one.
+    this.mask.hide();
     this.createLoginForm();
     this.createLoginWindow();
+}
+
+/**
+ * Checks if the user is logged in, by making a request to /api/ehlo.
+ * If the user is logged in, skips straight to the UI, otherwise, asks for a password.
+ */
+FOBO.login.prototype.verifyLogin = function() {
+    // Verify login mask.
+    this.mask = new Ext.LoadMask( Ext.getBody(), { msg: "Verifying login..." } );
+    this.mask.show();
+
+    // Create Ajax request to the /menu-item-categories/ service.
+    Ext.Ajax.request( {
+        url: '/api/ehlo/',
+        method: "GET",
+        success: function( raw ) {
+            // Try and decode data.
+            var response;
+            try {
+                response = Ext.decode( raw.responseText );
+            } catch ( Ex ) {
+                // Do nothing.
+            }
+
+            // Jump straight to the user interface if the user is already logged in.
+            if (typeof response.ehlo !== "undefined" && response.ehlo) {
+                this.preloadData();
+            } else {
+                // Else show the login UI.
+                this.showLoginUi();
+            }
+        }.bind(this),
+        failure: function() {
+            // Show the login UI.
+            this.showLoginUi();
+        }.bind(this)
+    } );
 }
 
 /**
@@ -47,8 +95,10 @@ FOBO.login.prototype.preloadData = function() {
                 // Store in the common data object.
                 Common.FoodMenu.MenuItemCategories = response;
 
-                // Hide the login window.
-                this.window.hide();
+                // Hide the login window...if it was displayed.
+                if (this.window) {
+                    this.window.hide();
+                }
                 // Call the authentication callback, if any.
                 if ( this._callback ) {
                     this._callback();
