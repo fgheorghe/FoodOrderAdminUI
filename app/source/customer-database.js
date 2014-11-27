@@ -46,6 +46,43 @@ FOBO.ui.prototype.customerDatabase.prototype.createStore = function() {
 FOBO.ui.prototype.customerDatabase.prototype.refreshData = function() {
     // Reload data.
     this.panel.getStore().load();
+
+    // Remove selection, and reset selection dependant buttons.
+    this.panel.getView().getSelectionModel().deselectAll();
+    this.verifyButton.setDisabled( true );
+    this.verifyButton.setText( 'Verify' );
+    this.editCustomerButton.setDisabled(true);
+}
+
+/**
+ * Function used for creating the add customer window.
+ */
+FOBO.ui.prototype.customerDatabase.prototype.addCustomerButtonHandler = function() {
+    // Create the customer edit / view window.
+    var win = new FOBO.shared.customerWindow(undefined, undefined, function() {
+        // Reload data.
+        this.refreshData();
+    }.bind(this));
+
+    // Display it.
+    win.window.show();
+}
+
+/**
+ * Function used for creating the edit customer window.
+ */
+FOBO.ui.prototype.customerDatabase.prototype.editCustomerButtonHandler = function() {
+    // Get selection details.
+    var customerData = this.panel.getSelectionModel().getSelection()[0].data,
+        customerId = customerData.id;
+    // Create the customer edit / view window.
+    var win = new FOBO.shared.customerWindow(customerId, customerData, function() {
+        // Reload data.
+        this.refreshData();
+    }.bind(this));
+
+    // Display it.
+    win.window.show();
 }
 
 /**
@@ -70,9 +107,6 @@ FOBO.ui.prototype.customerDatabase.prototype.init = function() {
                     method: "POST",
                     success: function(response, opts) {
                         this.refreshData();
-                        this.panel.getView().getSelectionModel().deselectAll();
-                        this.verifyButton.setDisabled( true );
-                        this.verifyButton.setText( 'Verify' );
                     }.bind( this ),
                     failure: function(response, opts) {
                         // TODO: Implement.
@@ -87,6 +121,13 @@ FOBO.ui.prototype.customerDatabase.prototype.init = function() {
     this.ordersButton = Ext.create( 'Ext.button.Button', {
         type: 'button',
         text: 'View Orders',
+        disabled: true
+    } );
+
+    this.editCustomerButton = Ext.create( 'Ext.button.Button', {
+        text: 'Edit Customer',
+        type: 'button',
+        handler: this.editCustomerButtonHandler.bind(this),
         disabled: true
     } );
 
@@ -109,7 +150,11 @@ FOBO.ui.prototype.customerDatabase.prototype.init = function() {
         ],
         tbar: {
             // TODO: Add view orders: this.ordersButton.
-            items: [ this.verifyButton, {
+            items: [ {
+                text: 'Add Customer',
+                type: 'button',
+                handler: this.addCustomerButtonHandler.bind(this)
+            }, this.editCustomerButton, this.verifyButton, {
                 text: 'Refresh',
                 type: 'button',
                 handler: this.refreshData.bind( this )
@@ -124,6 +169,7 @@ FOBO.ui.prototype.customerDatabase.prototype.init = function() {
                     this.verifyButton.setText( "Verify" );
                 }
                 this.ordersButton.setDisabled( false );
+                this.editCustomerButton.setDisabled(false);
             }.bind( this )
         },
         // paging bar on the bottom

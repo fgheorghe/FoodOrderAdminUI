@@ -71,122 +71,22 @@ FOBO.ui.prototype.orders.prototype.createComboStores = function() {
  * Creates and shows the add or edit customer window.
  */
 FOBO.ui.prototype.orders.prototype.createAddCustomerWindow = function( customerId, customerData ) {
-    var customerNameField = Ext.create( 'Ext.form.field.Text', {
-        fieldLabel: 'Customer Name',
-        width: 350,
-        labelWidth: 120,
-        labelAlign: 'right',
-        xtype: 'textfield',
-        allowBlank: false,
-        value: customerId ? customerData.name : ""
-    }), customerEmailField = Ext.create( 'Ext.form.field.Text', {
-        fieldLabel: 'Email Address',
-        width: 350,
-        labelWidth: 120,
-        labelAlign: 'right',
-        xtype: 'textfield',
-        allowBlank: false,
-        value: customerId ? customerData.email : ""
-    }), customerPostCodeField = Ext.create( 'Ext.form.field.Text', {
-        fieldLabel: 'Post Code',
-        width: 350,
-        labelWidth: 120,
-        labelAlign: 'right',
-        xtype: 'textfield',
-        allowBlank: false,
-        value: customerId ? customerData.post_code : ""
-    }), customerPhoneNumberField = Ext.create( 'Ext.form.field.Text', {
-        fieldLabel: 'Phone Number',
-        width: 350,
-        labelWidth: 120,
-        labelAlign: 'right',
-        xtype: 'textfield',
-        allowBlank: false,
-        value: customerId ? customerData.phone_number : ""
-    }), customerAddressField = Ext.create( 'Ext.form.field.Text', {
-        fieldLabel: 'Address',
-        width: 350,
-        labelWidth: 120,
-        labelAlign: 'right',
-        xtype: 'textfield',
-        allowBlank: false,
-        value: customerId ? customerData.address : ""
-    }), verifiedCustomer = Ext.create( 'Ext.form.field.Checkbox', {
-        fieldLabel: 'Verified Customer'
-        ,labelWidth: 120
-        ,inputValue: true,
-        checked: customerId && customerData.verified === 1 ? true : false
-    } );
+    // Create the customer edit / view window.
+    var win = new FOBO.shared.customerWindow(customerId, customerData, function() {
+        // Upon success, re-set the configured customer values on the order form.
+        if ( customerId ) {
+            this.customerNameField.setValue();
+            this.phoneNumberField.setValue();
+            this.addressField.setValue();
+            this.editCustomerButton.setDisabled( true );
+            // TODO: Select the value, not just reload and remove data.
+        }
+        // And reload data.
+        this.customerNameField.store.load();
+    }.bind(this));
 
-    // Create the form for this window.
-    var form = Ext.create( 'Ext.form.Panel', {
-        border: false,
-        frame: false,
-        bodyPadding: 5,
-        items: [
-            customerNameField
-            ,customerEmailField
-            ,customerPostCodeField
-            ,customerPhoneNumberField
-            ,customerAddressField
-            ,verifiedCustomer
-            // TODO: Add password support...somehow.
-        ]
-        ,buttons: [{
-            text: 'Reset',
-            handler: function() {
-                form.getForm().reset();
-            }.bind( this )
-        }, {
-            text: customerId ? 'Save' : 'Add',
-            handler: function() {
-                var method = 'POST',
-                    url = customerId ? '/api/customer/' + customerId : '/api/customer/';
-                if ( form.getForm().isValid() ) {
-                    Ext.Ajax.request({
-                        url: url,
-                        method: method,
-                        params: {
-                            name: customerNameField.getValue()
-                            ,post_code: customerPostCodeField.getValue()
-                            ,phone_number: customerPhoneNumberField.getValue()
-                            ,address: customerAddressField.getValue()
-                            ,email: customerEmailField.getValue()
-                            ,verified: verifiedCustomer.getValue() !== true ? 0 : 1
-                        },
-                        success: function(response, opts) {
-                            win.close();
-
-                            if ( customerId ) {
-                                this.customerNameField.setValue();
-                                this.phoneNumberField.setValue();
-                                this.addressField.setValue();
-                                this.editCustomerButton.setDisabled( true );
-                                this.customerNameField.store.load();
-                                // TODO: Select the value, not just reload and remove data.
-                            }
-                        }.bind( this ),
-                        failure: function(response, opts) {
-                            // TODO: Implement.
-                            console.log('server-side failure with status code ' + response.status);
-                        }
-                    });
-                }
-             }.bind( this )
-        }]
-    } );
-
-    // Create the window itself.
-    var win = Ext.create( 'Ext.window.Window', {
-        title: typeof customerId ? 'Edit Customer' : 'Add Customer'
-        ,modal: true
-        ,height: 270
-        ,width: 380
-        ,layout: 'fit'
-        ,items: [ form ]
-    } );
-
-    win.show();
+    // Display it.
+    win.window.show();
 }
 
 /**

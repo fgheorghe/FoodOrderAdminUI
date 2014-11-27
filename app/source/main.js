@@ -17,6 +17,8 @@ Ext.require([
  * @nemspace Provides the application namespace.
  */
 var FOBO = {
+    // For storing shared objects.
+    shared: {},
     /**
      * @function Method used for initialising the user interface, once Ext is ready.
      */
