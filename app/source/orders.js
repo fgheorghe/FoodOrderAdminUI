@@ -106,7 +106,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             this.deliveryTypeCombo.setValue( order.delivery_type );
             this.customerTypeCombo.setValue( order.customer_type );
             this.paymentStatusCombo.setValue( order.payment_status );
-            this.totalField.setValue( order.total_price );
+            this.totalField.setValue( order.total_price ? order.total_price : 0 );
             this.discountField.setValue( order.discount );
             this.finalField.setValue( ( order.total_price - order.discount * order.total_price / 100 ).toFixed( 2 ) );
             // Set the combo value, only after data is loaded.
@@ -764,6 +764,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             'id',
             { name: 'total_price', type: 'double' },
             'delivery_address',
+            'item_count',
             'post_code',
             'notes',
             'status',
@@ -915,6 +916,20 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             { header: 'Order Type', dataIndex: 'order_type', width: 90, renderer: function( value ) {
                 return Common.OrderConstants._Cached.OrderTypes[value];
             } },
+            { header: 'Items', dataIndex: 'item_count', width: 80 },
+            { header: 'Total Price', dataIndex: 'total_price', width: 90, renderer: function( value ) {
+                if (value) {
+                    return parseInt( value, 10).toFixed( 2 );
+                }
+                return 0;
+            } },
+            { header: 'Discount (%)', dataIndex: 'discount', width: 90 },
+            { header: 'Final Price', dataIndex: 'final_price', width: 90, renderer: function( value ) {
+                if (value) {
+                    return parseInt( value, 10).toFixed( 2 );
+                }
+                return 0;
+            } },
             { header: 'Delivery Type', dataIndex: 'delivery_type', width: 110, renderer: function( value ) {
                 return Common.OrderConstants._Cached.DeliveryTypes[value];
             } },
@@ -934,13 +949,6 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             } },
             { header: 'Delivery Time', dataIndex: 'delivery_time', width: 40, renderer: function( value ) {
                 return ( value === "0000-00-00 00:00:00" ) ? "" : value;
-            } },
-            { header: 'Total Price', dataIndex: 'total_price', width: 90, renderer: function( value ) {
-                return parseInt( value, 10).toFixed( 2 );
-            } },
-            { header: 'Discount (%)', dataIndex: 'discount', width: 90 },
-            { header: 'Final Price', dataIndex: 'final_price', width: 90, renderer: function( value ) {
-                return parseInt( value, 10).toFixed( 2 );
             } },
             { header: 'Printer Message', dataIndex: 'printer_message', width: 180 },
             { header: 'Notes', dataIndex: 'notes', width: 180 }
