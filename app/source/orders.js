@@ -550,6 +550,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 }
             }.bind( this )
         }],
+        autoScroll: true,
         items: [
             this.orderTypeCombo
             ,this.deliveryTypeCombo
@@ -605,6 +606,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         title: order ? "View order details" : "Create new order",
         height: 690,
         width: 600,
+        minWidth: 700,
         layout: 'border',
         maximizable: true,
         maximized: true,
