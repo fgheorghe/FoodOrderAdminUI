@@ -155,8 +155,8 @@ FOBO.ui.prototype.customerDatabase.prototype.init = function() {
             { header: 'Create Date', dataIndex: 'create_date', width: 120, renderer: Ext.util.Format.dateRenderer('d/m/Y H:i') },
             { header: 'Verified', dataIndex: 'verified', width: 100, renderer: function( value ) {
                 return value === 1 ? "Yes" : "No";
-            } },
-            { header: 'Order Total', dataIndex: 'order_total', width: 100 }
+            } }
+//            { header: 'Order Total', dataIndex: 'order_total', width: 100 } TODO: Add back later on, to include discounts.
         ],
         tbar: {
             // TODO: Add view orders: this.ordersButton.

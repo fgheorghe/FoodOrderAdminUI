@@ -87,6 +87,19 @@ FOBO.ui.prototype.eosr.prototype.init = function() {
             { header: 'Created By', dataIndex: 'created_by', width: 100,
                 renderer: Util.textColumnRenderer
             },
+            { header: 'Total Price', dataIndex: 'total_price', width: 90, renderer: function( value ) {
+                if (value) {
+                    return parseInt( value, 10).toFixed( 2 );
+                }
+                return 0;
+            } },
+            { header: 'Discount (%)', dataIndex: 'discount', width: 90 },
+            { header: 'Final Price', dataIndex: 'final_price', width: 90, renderer: function( value ) {
+                if (value) {
+                    return parseInt( value, 10).toFixed( 2 );
+                }
+                return 0;
+            }, summaryType: 'sum', summaryRenderer: function(value) { return value.toFixed( 2 ) } },
             { header: 'Delivery Type', dataIndex: 'delivery_type', width: 110, renderer: function( value ) {
                 return Common.OrderConstants._Cached.DeliveryTypes[value];
             } },
@@ -108,15 +121,7 @@ FOBO.ui.prototype.eosr.prototype.init = function() {
             },
             { header: 'Delivery Time', dataIndex: 'delivery_time', width: 40, renderer: function( value ) {
                 return ( value === "0000-00-00 00:00:00" ) ? "" : value;
-            } },
-            { header: 'Total Price', dataIndex: 'total_price', width: 90, renderer: function( value ) {
-                return parseInt( value, 10).toFixed( 2 );
-            } },
-            { header: 'Discount (%)', dataIndex: 'discount', width: 90 },
-            { header: 'Final Price', dataIndex: 'final_price', width: 90, renderer: function( value ) {
-                return parseInt( value, 10).toFixed( 2 );
-            }, summaryType: 'sum', summaryRenderer: function(value) { return value.toFixed( 2 ) } },
-            { header: 'Printer Message', dataIndex: 'printer_message', width: 180,
+            } },{ header: 'Printer Message', dataIndex: 'printer_message', width: 180,
                 renderer: Util.textColumnRenderer
             },
             { header: 'Notes', dataIndex: 'notes', width: 180,
