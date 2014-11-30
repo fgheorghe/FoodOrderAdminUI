@@ -460,7 +460,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 for ( var i = 0; i < selected.length; i++ ) {
                     price += selected[i].data.price;
                 }
-                this.totalField.setValue( price );
+                this.totalField.setValue( price.toFixed( 2 ) );
                 this.finalField.setValue( ( price - price * discount / 100 ).toFixed( 2 ) );
             }.bind( this )
         }
