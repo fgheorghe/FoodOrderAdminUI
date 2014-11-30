@@ -22,7 +22,7 @@ FOBO.ui.prototype.printerActivity.prototype.refreshData = function() {
  */
 FOBO.ui.prototype.printerActivity.prototype.createStore = function() {
     this.store = Ext.create( 'Ext.data.JsonStore', {
-        fields:[ 'id', { name: 'date_time', type: 'date' }, 'ip_address', 'requested_service_name', 'request_data' ],
+        fields:[ 'id', { name: 'date_time', type: 'date' }, 'printer_identifier', 'ip_address', 'requested_service_name', 'request_data' ],
         proxy:{
             type:'rest',
             url:'/api/printer-activity/',
@@ -45,6 +45,7 @@ FOBO.ui.prototype.printerActivity.prototype.init = function() {
         title: 'Printer Activity',
         store: this.store,
         columns: [
+            { header: 'Identifier', dataIndex: 'printer_identifier', width: 180 },
             { header: 'Date Time', dataIndex: 'date_time', width: 350 },
             { header: 'IP Address', dataIndex: 'ip_address', flex: 1 },
             { header: 'Requested Service', dataIndex: 'requested_service_name', width: 180 },
