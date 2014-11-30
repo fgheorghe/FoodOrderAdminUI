@@ -136,11 +136,21 @@ FOBO.ui.prototype.customerDatabase.prototype.init = function() {
         title: 'Customer Database',
         store: this.store,
         columns: [
-            { header: 'Name', dataIndex: 'name', width: 180 },
-            { header: 'Email Address', dataIndex: 'email', width: 180 },
-            { header: 'Post Code', dataIndex: 'post_code', width: 180 },
-            { header: 'Address', dataIndex: 'address', width: 200 },
-            { header: 'Phone Number', dataIndex: 'phone_number', width: 140 },
+            { header: 'Name', dataIndex: 'name', width: 180,
+                renderer: Util.textColumnRenderer
+            },
+            { header: 'Email Address', dataIndex: 'email', width: 180,
+                renderer: Util.textColumnRenderer
+            },
+            { header: 'Post Code', dataIndex: 'post_code', width: 180,
+                renderer: Util.textColumnRenderer
+            },
+            { header: 'Address', dataIndex: 'address', width: 200,
+                renderer: Util.textColumnRenderer
+            },
+            { header: 'Phone Number', dataIndex: 'phone_number', width: 140,
+                renderer: Util.textColumnRenderer
+            },
             { header: 'Last Login', dataIndex: 'last_login', width: 120, renderer: Ext.util.Format.dateRenderer('d/m/Y H:i') },
             { header: 'Create Date', dataIndex: 'create_date', width: 120, renderer: Ext.util.Format.dateRenderer('d/m/Y H:i') },
             { header: 'Verified', dataIndex: 'verified', width: 100, renderer: function( value ) {

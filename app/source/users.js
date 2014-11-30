@@ -342,8 +342,12 @@ FOBO.ui.prototype.users.prototype.init = function() {
                 editable: false,
                 allowBlank: false
             } },
-            { header: 'Name / Identifier', dataIndex: 'name', flex: 1 },
-            { header: 'Email Address / Username', dataIndex: 'email', width: 180 },
+            { header: 'Name / Identifier', dataIndex: 'name', flex: 1,
+                renderer: Util.textColumnRenderer
+            },
+            { header: 'Email Address / Username', dataIndex: 'email', width: 180,
+                renderer: Util.textColumnRenderer
+            },
             { header: 'Create Date', dataIndex: 'create_date', width: 100, renderer: Ext.util.Format.dateRenderer('d/m/Y') },
             { header: 'Last Login', dataIndex: 'last_login', width: 100, renderer: Ext.util.Format.dateRenderer('d/m/Y H:i') }
         ],

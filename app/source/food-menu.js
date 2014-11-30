@@ -296,7 +296,9 @@ FOBO.ui.prototype.foodMenu.prototype.createPanel = function() {
                 return "n/a";
             } },
             { header: 'Number',field: { xtype: 'textfield' },  dataIndex: 'item_number', width: 80 },
-            { header: 'Name',field: { xtype: 'textfield' },  dataIndex: 'item_name', flex: 1 },
+            { header: 'Name',field: { xtype: 'textfield' },  dataIndex: 'item_name', flex: 1,
+                renderer: Util.textColumnRenderer
+            },
             { header: 'Size', dataIndex: 'size_id', field: {
                 xtype: 'combo',
                 name: 'size_id',
@@ -316,7 +318,9 @@ FOBO.ui.prototype.foodMenu.prototype.createPanel = function() {
                 return "n/a";
             } },
             { header: 'Price', dataIndex: 'price', field: { xtype: 'numberfield', value: 1, minValue: 1 } },
-            { header: 'Description',field: { xtype: 'textfield' },  dataIndex: 'item_description', width: 150 }
+            { header: 'Description',field: { xtype: 'textfield' },  dataIndex: 'item_description', width: 150,
+                renderer: Util.textColumnRenderer
+            }
         ],
         tbar: {
             items: [ {

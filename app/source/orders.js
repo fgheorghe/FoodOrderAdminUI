@@ -494,7 +494,9 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 }
                 return categoryName;
             } },
-            { header: 'Name', dataIndex: 'item_name', flex: 1 },
+            { header: 'Name', dataIndex: 'item_name', flex: 1,
+                renderer: Util.textColumnRenderer
+            },
             { header: 'Number',field: { xtype: 'textfield' },  dataIndex: 'item_number', width: 80 },
             { header: 'Size', dataIndex: 'size_id', renderer: function( value ) {
                 var sizeName = "n/a";
@@ -912,7 +914,9 @@ FOBO.ui.prototype.orders.prototype.init = function() {
         title: 'Orders',
         store: this.store,
         columns: [
-            { header: 'Created By', dataIndex: 'created_by', width: 100 },
+            { header: 'Created By', dataIndex: 'created_by', width: 100,
+                renderer: Util.textColumnRenderer
+            },
             { header: 'Order Type', dataIndex: 'order_type', width: 90, renderer: function( value ) {
                 return Common.OrderConstants._Cached.OrderTypes[value];
             } },
@@ -939,19 +943,31 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             { header: 'Payment Status', dataIndex: 'payment_status', width: 120, renderer: function( value ) {
                 return Common.OrderConstants._Cached.PaymentStatuses[value];
             } },
-            { header: 'Customer Name', dataIndex: 'customer_name', flex: 1 },
-            { header: 'Customer Phone', dataIndex: 'customer_phone_number', width: 150 },
+            { header: 'Customer Name', dataIndex: 'customer_name', flex: 1,
+                renderer: Util.textColumnRenderer
+            },
+            { header: 'Customer Phone', dataIndex: 'customer_phone_number', width: 150,
+                renderer: Util.textColumnRenderer
+            },
             { header: 'Create Date', dataIndex: 'create_date', width: 150 },
-            { header: 'Delivery Address', dataIndex: 'delivery_address', width: 150 },
-            { header: 'Post Code', dataIndex: 'post_code', width: 50 },
+            { header: 'Delivery Address', dataIndex: 'delivery_address', width: 150,
+                renderer: Util.textColumnRenderer
+            },
+            { header: 'Post Code', dataIndex: 'post_code', width: 50,
+                renderer: Util.textColumnRenderer
+            },
             { header: 'Status', dataIndex: 'status', width: 80, renderer: function( value ) {
                 return Common.OrderConstants._Cached.OrderStatuses[value];
             } },
             { header: 'Delivery Time', dataIndex: 'delivery_time', width: 40, renderer: function( value ) {
                 return ( value === "0000-00-00 00:00:00" ) ? "" : value;
             } },
-            { header: 'Printer Message', dataIndex: 'printer_message', width: 180 },
-            { header: 'Notes', dataIndex: 'notes', width: 180 }
+            { header: 'Printer Message', dataIndex: 'printer_message', width: 180,
+                renderer: Util.textColumnRenderer
+            },
+            { header: 'Notes', dataIndex: 'notes', width: 180,
+                renderer: Util.textColumnRenderer
+            }
         ],
         listeners: {
             itemclick: function( grid, record, item, index, e, eOpts ) {

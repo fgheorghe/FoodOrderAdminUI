@@ -45,11 +45,15 @@ FOBO.ui.prototype.printerActivity.prototype.init = function() {
         title: 'Printer Activity',
         store: this.store,
         columns: [
-            { header: 'Identifier', dataIndex: 'printer_identifier', width: 180 },
+            { header: 'Identifier', dataIndex: 'printer_identifier', width: 180,
+                renderer: Util.textColumnRenderer
+            },
             { header: 'Date Time', dataIndex: 'date_time', width: 350 },
             { header: 'IP Address', dataIndex: 'ip_address', flex: 1 },
             { header: 'Requested Service', dataIndex: 'requested_service_name', width: 180 },
-            { header: 'Request Data', dataIndex: 'request_data', width: 180 }
+            { header: 'Request Data', dataIndex: 'request_data', width: 180,
+                renderer: Util.textColumnRenderer
+            }
         ],
         tbar: {
             items: [ {
