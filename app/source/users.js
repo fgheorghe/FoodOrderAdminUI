@@ -113,7 +113,24 @@ FOBO.ui.prototype.users.prototype.createChangeUserPasswordPrompt = function() {
  * @function Method used for creating the add user window, and showing it.
  */
 FOBO.ui.prototype.users.prototype.createAddUserWindow = function() {
-    // Create form.
+    // Prepare the username / email address input field.
+    this.emailAddressTextField = Ext.create( 'Ext.form.field.Text', {
+        fieldLabel: 'Email Address',
+        name: 'email',
+        allowBlank: false,
+        labelAlign: 'right',
+        tabIndex: 3
+    } );
+    // Create a name text field.
+    this.nameTextField = Ext.create( 'Ext.form.field.Text', {
+        fieldLabel: 'Name',
+        name: 'name',
+        allowBlank: false,
+        labelAlign: 'right',
+        tabIndex: 2
+    } );
+
+        // Create form.
     var form = Ext.create( 'Ext.form.Panel', {
         defaultType: 'textfield',
         frame: false,
@@ -128,20 +145,19 @@ FOBO.ui.prototype.users.prototype.createAddUserWindow = function() {
             labelAlign: 'right',
             editable: false,
             allowBlank: false,
-            tabIndex: 1
-        } ), {
-            fieldLabel: 'Name',
-            name: 'name',
-            allowBlank: false,
-            labelAlign: 'right',
-            tabIndex: 2
-        }, {
-            fieldLabel: 'Email Address',
-            name: 'email',
-            allowBlank: false,
-            labelAlign: 'right',
-            tabIndex: 3
-        }, {
+            tabIndex: 1,
+            listeners: {
+                change: function(combo, value ) {
+                    if (value === 1 || value === 5) {
+                        this.emailAddressTextField.setFieldLabel('Username');
+                        this.nameTextField.setFieldLabel('Identifier');
+                    } else {
+                        this.emailAddressTextField.setFieldLabel('Email Address');
+                        this.nameTextField.setFieldLabel('Name');
+                    }
+                }.bind(this)
+            }
+        } ), this.nameTextField, this.emailAddressTextField, {
             fieldLabel: 'Password',
             name: 'password',
             allowBlank: false,
@@ -326,8 +342,8 @@ FOBO.ui.prototype.users.prototype.init = function() {
                 editable: false,
                 allowBlank: false
             } },
-            { header: 'Name', dataIndex: 'name', flex: 1 },
-            { header: 'Email Address', dataIndex: 'email', width: 180 },
+            { header: 'Name / Identifier', dataIndex: 'name', flex: 1 },
+            { header: 'Email Address / Username', dataIndex: 'email', width: 180 },
             { header: 'Create Date', dataIndex: 'create_date', width: 100, renderer: Ext.util.Format.dateRenderer('d/m/Y') },
             { header: 'Last Login', dataIndex: 'last_login', width: 100, renderer: Ext.util.Format.dateRenderer('d/m/Y H:i') }
         ],
