@@ -384,10 +384,10 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             emptyText: 'No matching customers found.',
             getInnerTpl: function() {
                 return '<div class="search-item">' +
-                    'Name: {name}<br />' +
-                    'Post Code: {post_code}<br />' +
-                    'Phone Number: {phone_number}<br />' +
-                    'Email Address: {email}<br />' +
+                    'Name: {[Util.textColumnRenderer(values.name)]}<br />' +
+                    'Post Code: {[Util.textColumnRenderer(values.post_code)]}<br />' +
+                    'Phone Number: {[Util.textColumnRenderer(values.phone_number)]}<br />' +
+                    'Email Address: {[Util.textColumnRenderer(values.email)]}<br />' +
                     'Verified: <tpl if="verified === 1">Yes</tpl><tpl if="verified === 0">No</tpl>' +
                     '</div>';
             }
