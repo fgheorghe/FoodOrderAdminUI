@@ -915,7 +915,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             itemclick: function( grid, record, item, index, e, eOpts ) {
                 this.viewDetailsButton.setDisabled( false );
                 this.viewMapDirectionsButton.setDisabled( false );
-                if ( record.data.status !== 3 ) {
+                if ( record.data.status === 0 || record.data.status === 1 || record.data.status === 99 ) {
                     this.cancelOrderButton.setDisabled( false );
                 } else {
                     this.cancelOrderButton.setDisabled( true );
