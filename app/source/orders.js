@@ -656,7 +656,7 @@ FOBO.ui.prototype.orders.prototype.cancelOrder = function() {
                 // Create AJAX request object, cancel the order.
                 Ext.Ajax.request({
                     url: '/api/order/' + order_id + '/cancel/',
-                    method: 'GET',
+                    method: 'POST',
                     success: function(response,opts) {
                         this.refreshData();
                         this.loadMask.hide();
