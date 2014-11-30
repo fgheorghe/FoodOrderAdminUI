@@ -36,7 +36,7 @@ FOBO.ui.prototype.foodMenu.prototype.createComboStores = function() {
  */
 FOBO.ui.prototype.foodMenu.prototype.createStore = function() {
     this.store = Ext.create( 'Ext.data.JsonStore', {
-        fields:[ 'id', { name: 'category_id', type: 'int' }, 'item_name', 'item_number', 'size_id', 'price' ],
+        fields:[ 'id', { name: 'category_id', type: 'int' }, 'item_description', 'item_name', 'item_number', 'size_id', 'price' ],
         proxy:{
             type:'rest',
             url:'/api/menu-items/',
@@ -96,15 +96,21 @@ FOBO.ui.prototype.foodMenu.prototype.createNewItemWindow = function() {
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 4
-        } ]
+        }, Ext.create( 'Ext.form.field.TextArea', {
+            fieldLabel: 'Description',
+            labelAlign: 'right',
+            width: 400,
+            name: 'item_description',
+            tabIndex: 5
+        } ) ]
     } );
 
     // Create the window and its form
     var window = Ext.create('Ext.window.Window', {
         title: 'Add New Food Menu Item',
         modal: true,
-        height: 250,
-        width: 400,
+        height: 300,
+        width: 430,
         bodyPadding: 5,
         layout: 'fit',
         items: [ form ],
@@ -123,6 +129,7 @@ FOBO.ui.prototype.foodMenu.prototype.createNewItemWindow = function() {
                     menuItem = {
                         category_id: form.getForm().findField( 'category_id' ).getValue(),
                         item_name: form.getForm().findField( 'item_name' ).getValue(),
+                        item_description: form.getForm().findField( 'item_description' ).getValue(),
                         size_id: form.getForm().findField( 'size_id' ).getValue(),
                         price: form.getForm().findField( 'price' ).getValue(),
                         item_number: form.getForm().findField( 'item_number' ).getValue()
@@ -236,7 +243,8 @@ FOBO.ui.prototype.foodMenu.prototype.createPanel = function() {
                     item_name: event.record.data.item_name,
                     price: event.record.data.price,
                     size_id: event.record.data.size_id,
-                    item_number: event.record.data.item_number
+                    item_number: event.record.data.item_number,
+                    item_description: event.record.data.item_description
                 };
 
                 // TODO: Clean-up.
@@ -307,7 +315,8 @@ FOBO.ui.prototype.foodMenu.prototype.createPanel = function() {
                 }
                 return "n/a";
             } },
-            { header: 'Price', dataIndex: 'price', field: { xtype: 'numberfield', value: 1, minValue: 1 } }
+            { header: 'Price', dataIndex: 'price', field: { xtype: 'numberfield', value: 1, minValue: 1 } },
+            { header: 'Description',field: { xtype: 'textfield' },  dataIndex: 'item_description', width: 150 }
         ],
         tbar: {
             items: [ {
