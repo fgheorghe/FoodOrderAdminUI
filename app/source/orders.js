@@ -78,6 +78,7 @@ FOBO.ui.prototype.orders.prototype.createAddCustomerWindow = function( customerI
             this.customerNameField.setValue();
             this.phoneNumberField.setValue();
             this.addressField.setValue();
+            this.postCodeField.setValue();
             this.editCustomerButton.setDisabled( true );
             // TODO: Select the value, not just reload and remove data.
         }
@@ -108,9 +109,21 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             this.totalField.setValue( order.total_price );
             this.discountField.setValue( order.discount );
             this.finalField.setValue( ( order.total_price - order.discount * order.total_price / 100 ).toFixed( 2 ) );
-            this.customerNameField.setValue( order.customer_name );
-            this.phoneNumberField.setValue( order.customer_phone_number );
-            this.addressField.setValue( order.delivery_address );
+            // Set the combo value, only after data is loaded.
+            this.customerNameField.getStore().load(function() {
+                // If a customer id is set, the the value using that id.
+                if (order.customer_id) {
+                    this.customerNameField.setValue( order.customer_id );
+                } else {
+                    // Else, set the raw name.
+                    this.customerNameField.setRawValue( order.customer_name );
+                }
+                // Set the customer details only after the customer dd value is selected,
+                // to make sure if a custom address is used, this is not overwritten.
+                this.phoneNumberField.setValue( order.customer_phone_number );
+                this.addressField.setValue( order.delivery_address );
+                this.postCodeField.setValue( order.post_code );
+            }.bind(this));
             this.notesField.setValue( order.notes );
 
             // Select grid items.
@@ -196,29 +209,34 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             change: function(combo, value ) {
                 if ( value === 0 || value === 3 ) {
                     this.addressField.setVisible( false );
+                    this.postCodeField.setVisible( false );
                     this.customerNameField.setVisible( false );
                     this.editCustomerButton.setVisible( false );
                     this.addCustomerButton.setVisible( false );
                     this.phoneNumberField.setVisible( false );
                     this.deliveryTypeCombo.setVisible( false );
 
+                    this.postCodeField.setValue( "" );
                     this.addressField.setValue( "" );
                     this.customerNameField.setValue( "" );
                     this.phoneNumberField.setValue( "" );
                     this.deliveryTypeCombo.clearValue();
 
+                    this.postCodeField.allowBlank = true;
                     this.addressField.allowBlank = true;
                     this.customerNameField.allowBlank = true;
                     this.phoneNumberField.allowBlank = true;
                     this.deliveryTypeCombo.allowBlank = true;
                 } else {
                     this.addressField.setVisible( true );
+                    this.postCodeField.setVisible( true );
                     this.customerNameField.setVisible( true );
                     this.editCustomerButton.setVisible( true );
                     this.addCustomerButton.setVisible( true );
                     this.phoneNumberField.setVisible( true );
                     this.deliveryTypeCombo.setVisible( true );
 
+                    this.postCodeField.allowBlank = false;
                     this.addressField.allowBlank = false;
                     this.customerNameField.allowBlank = false;
                     this.phoneNumberField.allowBlank = false;
@@ -387,7 +405,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 // Populate fields, with row values.
                 this.phoneNumberField.setValue( selection[0].data.phone_number );
                 this.addressField.setValue( selection[0].data.address );
-                // TODO: Add customer post code!!!
+                this.postCodeField.setValue( selection[0].data.post_code );
             }.bind( this )
             ,change: function() {
                 // Reset selection.
@@ -401,6 +419,15 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
 
     this.addressField = Ext.create( 'Ext.form.field.Text', {
         fieldLabel: 'Delivery Address',
+        width: 250,
+        labelWidth: 120,
+        labelAlign: 'right',
+        xtype: 'textfield',
+        allowBlank: false
+    } );
+
+    this.postCodeField = Ext.create( 'Ext.form.field.Text', {
+        fieldLabel: 'Post Code',
         width: 250,
         labelWidth: 120,
         labelAlign: 'right',
@@ -528,13 +555,15 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                         method: method,
                         params: {
                             items: Ext.JSON.encode(orderItems)
-                            ,address: this.addressField.getValue()
+                            ,delivery_address: this.addressField.getValue()
+                            ,post_code: this.postCodeField.getValue()
                             ,notes: this.notesField.getValue()
                             ,order_type: this.orderTypeCombo.getValue()
                             ,payment_status: this.paymentStatusCombo.getValue()
                             ,customer_type: this.customerTypeCombo.getValue()
                             ,customer_phone_number: this.phoneNumberField.getValue()
-                            ,customer_name: this.customerNameField.getValue()
+                            ,customer_name: this.customerNameField.getRawValue()
+                            ,customer_id: this.customerNameField.getValue() ? "" : this.customerNameField.getValue()
                             ,delivery_type: this.deliveryTypeCombo.getValue()
                             ,discount: this.discountField.getValue()
                         },
@@ -596,6 +625,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             }
             ,this.phoneNumberField
             ,this.addressField
+            ,this.postCodeField
             ,this.notesField
         ]
     } );
@@ -734,6 +764,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             'id',
             { name: 'total_price', type: 'double' },
             'delivery_address',
+            'post_code',
             'notes',
             'status',
             'created_by',
@@ -897,6 +928,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             { header: 'Customer Phone', dataIndex: 'customer_phone_number', width: 150 },
             { header: 'Create Date', dataIndex: 'create_date', width: 150 },
             { header: 'Delivery Address', dataIndex: 'delivery_address', width: 150 },
+            { header: 'Post Code', dataIndex: 'post_code', width: 50 },
             { header: 'Status', dataIndex: 'status', width: 80, renderer: function( value ) {
                 return Common.OrderConstants._Cached.OrderStatuses[value];
             } },
