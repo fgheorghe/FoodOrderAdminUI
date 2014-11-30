@@ -38,6 +38,28 @@ FOBO.ui.prototype.createWestPanel = function() {
 }
 
 /**
+ * Logs the user out, by issuing a B/E logout request, and reloading the page.
+ */
+FOBO.ui.prototype.doLogout = function() {
+    // Create a user friendly load mask.
+    this.loadMask = new Ext.LoadMask( Ext.getBody(), { msg:"Logging out..."} );
+    this.loadMask.show();
+    // Request a log out.
+    Ext.Ajax.request({
+        url: '/api/logout/',
+        method: "GET",
+        success: function(response, opts) {
+            // And reload the page...
+            window.location.reload();
+        }.bind( this ),
+        failure: function(response, opts) {
+            // TODO: Implement.
+            console.log('server-side failure with status code ' + response.status);
+        }
+    });
+}
+
+/**
  * Treenode click event handler. Loads different panels for each menu item.
  * NOTE: Each node must have a "role" property, based on which the relevant panel is loaded.
  * NOTE: The panel name must be identical to the role name.
@@ -77,6 +99,11 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
             break;
         case "change-password":
             componentName = "changePassword";
+            break;
+        case "logout":
+            this.doLogout();
+            // Stop execution, this button is handled localy.
+            return;
             break;
     }
 
@@ -137,6 +164,10 @@ FOBO.ui.prototype.createMenuPanel = function() {
             }, {
                 text: "Change Password",
                 role: 'change-password',
+                leaf: true
+            }, {
+                text: 'Logout',
+                role: 'logout',
                 leaf: true
             } ]
         }

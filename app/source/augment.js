@@ -19,7 +19,12 @@ Ext.data.Connection.prototype.onComplete = function( request, xdrResult ) {
         // Do nothing.
     }
 
-    if ( typeof data !== "undefined" && typeof data.success !== "undefined" && data.success === false && typeof data.reason !== "undefined" && data.reason === -1 ) {
+    if (request.options.url !== '/api/ehlo/'
+        && typeof data !== "undefined"
+        && typeof data.success !== "undefined"
+        && data.success === false
+        && typeof data.reason !== "undefined"
+        && data.reason === 1 ) {
         // Notify the user, and show the login form.
         Ext.Msg.show( {
             title:'Session expired',
