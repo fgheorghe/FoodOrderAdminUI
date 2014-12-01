@@ -124,9 +124,9 @@ FOBO.ui.prototype.foodMenu.prototype.createNewItemWindow = function() {
             tabIndex: 5,
             handler: function() {
                 var menuItem;
-                this.addMenuItemLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
-                this.addMenuItemLoadMask.show();
                 if ( form.getForm().isValid() ) {
+                    this.addMenuItemLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
+                    this.addMenuItemLoadMask.show();
                     // Prepare Ajax request data
                     menuItem = {
                         category_id: form.getForm().findField( 'category_id' ).getValue(),
