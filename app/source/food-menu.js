@@ -124,6 +124,8 @@ FOBO.ui.prototype.foodMenu.prototype.createNewItemWindow = function() {
             tabIndex: 5,
             handler: function() {
                 var menuItem;
+                this.addMenuItemLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
+                this.addMenuItemLoadMask.show();
                 if ( form.getForm().isValid() ) {
                     // Prepare Ajax request data
                     menuItem = {
@@ -140,10 +142,12 @@ FOBO.ui.prototype.foodMenu.prototype.createNewItemWindow = function() {
                         method: "POST",
                         params: menuItem,
                         success: function(response, opts) {
+                            this.addMenuItemLoadMask.hide();
                             this.refreshData();
                             window.close();
                         }.bind( this ),
                         failure: function(response, opts) {
+                            this.addMenuItemLoadMask.hide();
                             // TODO: Implement.
                             console.log('server-side failure with status code ' + response.status);
                         }

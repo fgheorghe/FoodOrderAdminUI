@@ -104,6 +104,8 @@ FOBO.shared.customerWindow.prototype.createForm = function() {
                 var method = 'POST',
                     url = this.customerId ? '/api/customer/' + this.customerId : '/api/customer/';
                 if ( this.form.getForm().isValid() ) {
+                    this.customerLoadMask = new Ext.LoadMask( this.window.getEl(), { msg: "Please wait..." } );
+                    this.customerLoadMask.show();
                     Ext.Ajax.request({
                         url: url,
                         method: method,
@@ -116,6 +118,7 @@ FOBO.shared.customerWindow.prototype.createForm = function() {
                             ,verified: this.verifiedCustomer.getValue() !== true ? 0 : 1
                         },
                         success: function(response, opts) {
+                            this.customerLoadMask.hide();
                             this.window.close();
 
                             // Call a configured callback.
@@ -124,6 +127,7 @@ FOBO.shared.customerWindow.prototype.createForm = function() {
                             }
                         }.bind( this ),
                         failure: function(response, opts) {
+                            this.customerLoadMask.hide();
                             // TODO: Implement.
                             console.log('server-side failure with status code ' + response.status);
                         }

@@ -551,7 +551,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                             ,count: 1
                         } );
                     }
-
+                    this.orderLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
+                    this.orderLoadMask.show();
                     Ext.Ajax.request({
                         url: url,
                         method: method,
@@ -570,11 +571,13 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                             ,discount: this.discountField.getValue()
                         },
                         success: function(response, opts) {
+                            this.orderLoadMask.hide();
                             this.refreshData();
                             window.close();
                         }.bind( this ),
                         failure: function(response, opts) {
                             // TODO: Implement.
+                            this.orderLoadMask.hide();
                             console.log('server-side failure with status code ' + response.status);
                         }
                     });

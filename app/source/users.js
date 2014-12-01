@@ -193,12 +193,14 @@ FOBO.ui.prototype.users.prototype.createAddUserWindow = function() {
                         email: form.getForm().findField( 'email' ).getValue(),
                         password: form.getForm().findField( 'password' ).getValue()
                     };
-
+                    this.userLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
+                    this.userLoadMask.show();
                     Ext.Ajax.request({
                         url: '/api/user/',
                         method: "POST",
                         params: user,
                         success: function(response, opts) {
+                            this.userLoadMask.hide();
                             var data;
                             // Check if user has been created
                             try {
@@ -218,6 +220,7 @@ FOBO.ui.prototype.users.prototype.createAddUserWindow = function() {
                             window.close();
                         }.bind( this ),
                         failure: function(response, opts) {
+                            this.userLoadMask.hide();
                             // TODO: Implement.
                             console.log('server-side failure with status code ' + response.status);
                         }
