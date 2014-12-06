@@ -10,14 +10,76 @@ FOBO.ui.prototype.frontEndSettings = function() {
 };
 
 /**
+ * Prepares tab panels.
+ */
+FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
+    this.contactPanel = Ext.create( 'Ext.form.Panel', {
+        title: 'Contact Details',
+        frame: false,
+        border: false
+        ,buttons: [ {
+            text: 'Reset',
+            handler: function() {
+                this.loadSettings();
+            }.bind( this )
+        }, {
+            text: 'Submit',
+            tabIndex: 4,
+            handler: function() {
+                this.submitFormData();
+            }.bind( this )
+        } ]
+    } );
+
+    this.descriptionPanel = Ext.create( 'Ext.form.Panel', {
+        title: 'Restaurant Description',
+        frame: false,
+        border: false
+        ,buttons: [ {
+            text: 'Reset',
+            handler: function() {
+                this.loadSettings();
+            }.bind( this )
+        }, {
+            text: 'Submit',
+            tabIndex: 4,
+            handler: function() {
+                this.submitFormData();
+            }.bind( this )
+        } ]
+    } );
+
+    this.socialPanel = Ext.create( 'Ext.form.Panel', {
+        title: 'Social Media',
+        frame: false,
+        border: false
+        ,buttons: [ {
+            text: 'Reset',
+            handler: function() {
+                this.loadSettings();
+            }.bind( this )
+        }, {
+            text: 'Submit',
+            tabIndex: 4,
+            handler: function() {
+                this.submitFormData();
+            }.bind( this )
+        } ]
+    } );
+}
+
+/**
  * @function Initialises the object, by creating required panels and items.
  */
 FOBO.ui.prototype.frontEndSettings.prototype.init = function() {
+    // Prepare tab panels.
+    this.createPanels();
+
     // Panel itself.
-    this.panel = Ext.create( 'Ext.panel.Panel', {
+    this.panel = Ext.create( 'Ext.tab.Panel', {
         title: "Front-End Settings"
         // TODO: Implement.
-        ,items: []
+        ,items: [ this.contactPanel, this.descriptionPanel, this.socialPanel ]
         ,layout: 'fit'
         ,listeners: {
             //render: this.loadSettings.bind( this )
