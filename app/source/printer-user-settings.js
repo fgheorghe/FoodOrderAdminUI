@@ -5,14 +5,14 @@
 /**
  * @constructor Constructor for the settings class.
  */
-FOBO.ui.prototype.printerSettings = function() {
+FOBO.ui.prototype.printerUserSettings = function() {
     this.init();
 };
 
 /**
  * @function Initialises the object, by creating required panels and items.
  */
-FOBO.ui.prototype.printerSettings.prototype.init = function() {
+FOBO.ui.prototype.printerUserSettings.prototype.init = function() {
     // Panel itself.
     this.panel = Ext.create( 'Ext.panel.Panel', {
         title: "Printer Settings"

@@ -86,7 +86,7 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
             componentName = "frontEndSettings";
             break;
         case "printer-settings":
-            componentName = "printerSettings";
+            componentName = "printerUserSettings";
             break;
         case "printer-activity":
             componentName = "printerActivity";
