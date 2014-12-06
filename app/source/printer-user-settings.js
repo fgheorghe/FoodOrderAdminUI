@@ -15,7 +15,7 @@ FOBO.ui.prototype.printerUserSettings = function() {
 FOBO.ui.prototype.printerUserSettings.prototype.init = function() {
     // Panel itself.
     this.panel = Ext.create( 'Ext.panel.Panel', {
-        title: "Printer Settings"
+        title: "Printer User Settings"
         // TODO: Implement.
         ,items: []
         ,layout: 'fit'
