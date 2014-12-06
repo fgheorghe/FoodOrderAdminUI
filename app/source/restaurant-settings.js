@@ -5,14 +5,14 @@
 /**
  * @constructor Constructor for the settings class.
  */
-FOBO.ui.prototype.settings = function() {
+FOBO.ui.prototype.restaurantSettings = function() {
     this.init();
 };
 
 /**
  * @function Initialises the object, by creating required panels and items.
  */
-FOBO.ui.prototype.settings.prototype.init = function() {
+FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
     // Form panel, hosting input fields.
     this.form = Ext.create( 'Ext.form.Panel', {
         defaultType: 'textfield',
@@ -102,7 +102,7 @@ FOBO.ui.prototype.settings.prototype.init = function() {
 
     // Panel itself.
     this.panel = Ext.create( 'Ext.panel.Panel', {
-        title: "Settings"
+        title: "Restaurant Settings"
         ,items: [ this.form ]
         ,layout: 'fit'
         ,listeners: {
@@ -111,7 +111,7 @@ FOBO.ui.prototype.settings.prototype.init = function() {
     } );
 }
 
-FOBO.ui.prototype.settings.prototype.loadSettings = function() {
+FOBO.ui.prototype.restaurantSettings.prototype.loadSettings = function() {
     // Create a load mask, to let the user know
     // that we are fetching data.
     this.loadMask = new Ext.LoadMask( this.panel.getEl(), { msg:"Please wait..."} );
@@ -122,7 +122,7 @@ FOBO.ui.prototype.settings.prototype.loadSettings = function() {
     this.fetchSettings();
 }
 
-FOBO.ui.prototype.settings.prototype.fetchSettings = function() {
+FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
     // Create AJAX request object, and get form data.
     Ext.Ajax.request({
         url: '/api/restaurant-settings/',
@@ -152,7 +152,7 @@ FOBO.ui.prototype.settings.prototype.fetchSettings = function() {
     });
 }
 
-FOBO.ui.prototype.settings.prototype.submitFormData = function() {
+FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
     this.loadMask.show();
 
     // Prepare opening and closing time.
