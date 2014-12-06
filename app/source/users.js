@@ -148,7 +148,7 @@ FOBO.ui.prototype.users.prototype.createAddUserWindow = function() {
             tabIndex: 1,
             listeners: {
                 change: function(combo, value ) {
-                    if (value === 1 || value === 5) {
+                    if (value === 1) {
                         this.emailAddressTextField.setFieldLabel('Username');
                         this.nameTextField.setFieldLabel('Identifier');
                     } else {

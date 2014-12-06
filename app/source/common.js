@@ -27,8 +27,7 @@ var Common = {
             { id: 1, role_name: "Printer" },
             { id: 2, role_name: "Delivery" },
             { id: 3, role_name: "Administrator" },
-            { id: 4, role_name: "Chef" },
-            { id: 5, role_name: "Website" }
+            { id: 4, role_name: "Chef" }
         ]
     },
     // Order constants
