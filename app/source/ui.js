@@ -70,6 +70,10 @@ FOBO.ui.prototype.doLogout = function() {
  * @param eOpts
  */
 FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpts ) {
+    // Ignore if no role.
+    if (!record.raw.role) {
+        return;
+    }
     // Store panel name
     var componentName = false;
     switch ( record.raw.role ) {
