@@ -145,18 +145,7 @@ FOBO.ui.prototype.users.prototype.createAddUserWindow = function() {
             labelAlign: 'right',
             editable: false,
             allowBlank: false,
-            tabIndex: 1,
-            listeners: {
-                change: function(combo, value ) {
-                    if (value === 1) {
-                        this.emailAddressTextField.setFieldLabel('Username');
-                        this.nameTextField.setFieldLabel('Identifier');
-                    } else {
-                        this.emailAddressTextField.setFieldLabel('Email Address');
-                        this.nameTextField.setFieldLabel('Name');
-                    }
-                }.bind(this)
-            }
+            tabIndex: 1
         } ), this.nameTextField, this.emailAddressTextField, {
             fieldLabel: 'Password',
             name: 'password',
@@ -345,10 +334,10 @@ FOBO.ui.prototype.users.prototype.init = function() {
                 editable: false,
                 allowBlank: false
             } },
-            { header: 'Name / Identifier', dataIndex: 'name', flex: 1,
+            { header: 'Name', dataIndex: 'name', flex: 1,
                 renderer: Util.textColumnRenderer
             },
-            { header: 'Email Address / Username', dataIndex: 'email', width: 180,
+            { header: 'Email Address', dataIndex: 'email', width: 180,
                 renderer: Util.textColumnRenderer
             },
             { header: 'Create Date', dataIndex: 'create_date', width: 100, renderer: Ext.util.Format.dateRenderer('d/m/Y') },

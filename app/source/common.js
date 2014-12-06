@@ -24,7 +24,6 @@ var Common = {
     Users: {
         // User roles.
         Roles: [
-            { id: 1, role_name: "Printer" },
             { id: 2, role_name: "Delivery" },
             { id: 3, role_name: "Administrator" },
             { id: 4, role_name: "Chef" }
