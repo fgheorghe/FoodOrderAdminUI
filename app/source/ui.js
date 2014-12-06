@@ -175,7 +175,7 @@ FOBO.ui.prototype.createMenuPanel = function() {
                         role: 'front-end-settings',
                         leaf: true
                     }, {
-                        text: "Printer User",
+                        text: "Printer Users",
                         role: 'printer-user-settings',
                         leaf: true
                     }, {
