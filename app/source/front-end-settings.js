@@ -25,6 +25,12 @@ FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
             labelAlign: 'right',
             tabIndex: 1,
             labelWidth: 150
+        }, {
+            fieldLabel: 'Full Address',
+            name: 'full_address',
+            labelAlign: 'right',
+            tabIndex: 2,
+            labelWidth: 150
         }],
         buttons: [ {
             text: 'Reset',
@@ -163,6 +169,7 @@ FOBO.ui.prototype.frontEndSettings.prototype.fetchSettings = function() {
                 data = Ext.decode( response.responseText );
                 this.descriptionPanel.getForm().findField('restaurant_description').setValue(data.restaurant_description);
                 this.contactPanel.getForm().findField('phone_numbers').setValue(data.phone_numbers);
+                this.contactPanel.getForm().findField('full_address').setValue(data.full_address);
                 this.socialPanel.getForm().findField('facebook_page_url').setValue(data.facebook_page_url);
                 this.socialPanel.getForm().findField('google_page_url').setValue(data.google_page_url);
                 this.socialPanel.getForm().findField('twitter_page_url').setValue(data.twitter_page_url);
@@ -189,6 +196,7 @@ FOBO.ui.prototype.frontEndSettings.prototype.submitFormData = function() {
         params: {
             restaurant_description: this.descriptionPanel.getForm().findField('restaurant_description').getValue(),
             phone_numbers: this.contactPanel.getForm().findField('phone_numbers').getValue(),
+            full_address: this.contactPanel.getForm().findField('full_address').getValue(),
             facebook_page_url: this.socialPanel.getForm().findField('facebook_page_url').getValue(),
             google_page_url: this.socialPanel.getForm().findField('google_page_url').getValue(),
             twitter_page_url: this.socialPanel.getForm().findField('twitter_page_url').getValue()
