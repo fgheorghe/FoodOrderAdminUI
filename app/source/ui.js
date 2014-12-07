@@ -175,7 +175,7 @@ FOBO.ui.prototype.createMenuPanel = function() {
                         role: 'restaurant-settings',
                         leaf: true
                     }, {
-                        text: "Front-End",
+                        text: "Front End",
                         role: 'front-end-settings',
                         leaf: true
                     }, {

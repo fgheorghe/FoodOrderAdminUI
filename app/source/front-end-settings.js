@@ -48,7 +48,6 @@ FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
                     "insertdatetime media nonbreaking save table contextmenu directionality",
                     "emoticons template paste textcolor"
                 ],
-
                 toolbar1: "newdocument fullpage | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
                 toolbar2: "cut copy paste | searchreplace | bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image media code | inserttime preview | forecolor backcolor",
                 toolbar3: "table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | ltr rtl | spellchecker | visualchars visualblocks nonbreaking template pagebreak restoredraft",
@@ -101,7 +100,7 @@ FOBO.ui.prototype.frontEndSettings.prototype.init = function() {
 
     // Panel itself.
     this.panel = Ext.create( 'Ext.tab.Panel', {
-        title: "Front-End Settings"
+        title: "Front End Settings"
         // TODO: Implement.
         ,items: [ this.contactPanel, this.descriptionPanel, this.socialPanel ]
         ,layout: 'fit'
