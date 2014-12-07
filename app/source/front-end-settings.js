@@ -34,8 +34,32 @@ FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
     this.descriptionPanel = Ext.create( 'Ext.form.Panel', {
         title: 'Restaurant Description',
         frame: false,
-        border: false
-        ,buttons: [ {
+        border: false,
+        layout: 'fit',
+        items: [{
+            xtype: 'tinymce_textarea',
+            fieldStyle: 'font-family: Courier New; font-size: 12px;',
+            style: { border: '0' },
+            //noWysiwyg: true,
+            tinyMCEConfig: {
+                plugins: [
+                    "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+                    "searchreplace wordcount visualblocks visualchars code fullscreen",
+                    "insertdatetime media nonbreaking save table contextmenu directionality",
+                    "emoticons template paste textcolor"
+                ],
+
+                toolbar1: "newdocument fullpage | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
+                toolbar2: "cut copy paste | searchreplace | bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image media code | inserttime preview | forecolor backcolor",
+                toolbar3: "table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | ltr rtl | spellchecker | visualchars visualblocks nonbreaking template pagebreak restoredraft",
+                menubar: true,
+                toolbar_items_size: 'small'
+            },
+            id: 'restaurant_description',
+            name: 'restaurant_description',
+            value: ''
+        }],
+        buttons: [ {
             text: 'Reset',
             handler: function() {
                 this.loadSettings();
