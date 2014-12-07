@@ -14,10 +14,19 @@ FOBO.ui.prototype.frontEndSettings = function() {
  */
 FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
     this.contactPanel = Ext.create( 'Ext.form.Panel', {
-        title: 'Contact Details',
+        title: 'Public Contact Details',
         frame: false,
-        border: false
-        ,buttons: [ {
+        border: false,
+        defaultType: 'textfield',
+        bodyPadding: 5,
+        items: [{
+            fieldLabel: 'Phone Number(s)',
+            name: 'phone_numbers',
+            labelAlign: 'right',
+            tabIndex: 1,
+            labelWidth: 150
+        }],
+        buttons: [ {
             text: 'Reset',
             handler: function() {
                 this.loadSettings();
@@ -45,8 +54,8 @@ FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
                 plugins: [
                     "advlist autolink lists link image charmap print preview hr anchor pagebreak",
                     "searchreplace wordcount visualblocks visualchars code fullscreen",
-                    "insertdatetime media nonbreaking save table contextmenu directionality",
-                    "emoticons template paste textcolor"
+                    "insertdatetime media nonbreaking save table directionality",
+                    "paste textcolor"
                 ],
                 toolbar1: "newdocument fullpage | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
                 toolbar2: "cut copy paste | searchreplace | bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image media code | inserttime preview | forecolor backcolor",
@@ -75,8 +84,29 @@ FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
     this.socialPanel = Ext.create( 'Ext.form.Panel', {
         title: 'Social Media',
         frame: false,
-        border: false
-        ,buttons: [ {
+        border: false,
+        defaultType: 'textfield',
+        bodyPadding: 5,
+        items: [{
+            fieldLabel: 'Facebook Page URL',
+            name: 'facebook_page_url',
+            labelAlign: 'right',
+            tabIndex: 1,
+            labelWidth: 150
+        }, {
+            fieldLabel: 'Google Page URL',
+            name: 'google_page_url',
+            labelAlign: 'right',
+            tabIndex: 2,
+            labelWidth: 150
+        }, {
+            fieldLabel: 'Twitter URL',
+            name: 'twitter_page_url',
+            labelAlign: 'right',
+            tabIndex: 3,
+            labelWidth: 150
+        }],
+        buttons: [ {
             text: 'Reset',
             handler: function() {
                 this.loadSettings();
@@ -102,7 +132,7 @@ FOBO.ui.prototype.frontEndSettings.prototype.init = function() {
     this.panel = Ext.create( 'Ext.tab.Panel', {
         title: "Front End Settings"
         // TODO: Implement.
-        ,items: [ this.contactPanel, this.descriptionPanel, this.socialPanel ]
+        ,items: [ this.descriptionPanel, this.socialPanel, this.contactPanel ]
         ,layout: 'fit'
         ,listeners: {
             //render: this.loadSettings.bind( this )

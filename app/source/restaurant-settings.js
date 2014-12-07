@@ -26,7 +26,6 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             labelAlign: 'right',
             tabIndex: 1,
             labelWidth: 150,
-            allowBlank: false
         }, {
             fieldLabel: 'Restaurant Post Code',
             name: 'restaurant_post_code',
@@ -34,7 +33,6 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             labelAlign: 'right',
             tabIndex: 2,
             labelWidth: 150,
-            allowBlank: false
         }, {
             fieldLabel: 'Delivery Range (miles)',
             labelWidth: 150,
