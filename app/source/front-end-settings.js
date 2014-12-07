@@ -135,7 +135,7 @@ FOBO.ui.prototype.frontEndSettings.prototype.init = function() {
         ,items: [ this.descriptionPanel, this.socialPanel, this.contactPanel ]
         ,layout: 'fit'
         ,listeners: {
-            //render: this.loadSettings.bind( this )
+            render: this.loadSettings.bind( this )
         }
     } );
 }
@@ -161,6 +161,11 @@ FOBO.ui.prototype.frontEndSettings.prototype.fetchSettings = function() {
             // Populate the form, with data...if any.
             try {
                 data = Ext.decode( response.responseText );
+                this.descriptionPanel.getForm().findField('restaurant_description').setValue(data.restaurant_description);
+                this.contactPanel.getForm().findField('phone_numbers').setValue(data.phone_numbers);
+                this.socialPanel.getForm().findField('facebook_page_url').setValue(data.facebook_page_url);
+                this.socialPanel.getForm().findField('google_page_url').setValue(data.google_page_url);
+                this.socialPanel.getForm().findField('twitter_page_url').setValue(data.twitter_page_url);
             } catch ( Ex ) {
                 // Do nothing.
             }
@@ -181,8 +186,13 @@ FOBO.ui.prototype.frontEndSettings.prototype.submitFormData = function() {
     Ext.Ajax.request({
         url: '/api/front-end-settings/',
         method: 'POST',
-        // TODO: Implement.
-        params: {},
+        params: {
+            restaurant_description: this.descriptionPanel.getForm().findField('restaurant_description').getValue(),
+            phone_numbers: this.contactPanel.getForm().findField('phone_numbers').getValue(),
+            facebook_page_url: this.socialPanel.getForm().findField('facebook_page_url').getValue(),
+            google_page_url: this.socialPanel.getForm().findField('google_page_url').getValue(),
+            twitter_page_url: this.socialPanel.getForm().findField('twitter_page_url').getValue()
+        },
         success: function(){
             this.loadMask.hide();
         }.bind( this )
