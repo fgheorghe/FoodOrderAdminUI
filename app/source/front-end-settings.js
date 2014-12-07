@@ -24,12 +24,21 @@ FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
             name: 'phone_numbers',
             labelAlign: 'right',
             tabIndex: 1,
+            width: 450,
             labelWidth: 150
         }, {
             fieldLabel: 'Full Address',
             name: 'full_address',
             labelAlign: 'right',
             tabIndex: 2,
+            width: 450,
+            labelWidth: 150
+        }, {
+            fieldLabel: 'Info Text',
+            name: 'info_text',
+            labelAlign: 'right',
+            tabIndex: 3,
+            width: 450,
             labelWidth: 150
         }],
         buttons: [ {
@@ -170,6 +179,7 @@ FOBO.ui.prototype.frontEndSettings.prototype.fetchSettings = function() {
                 this.descriptionPanel.getForm().findField('restaurant_description').setValue(data.restaurant_description);
                 this.contactPanel.getForm().findField('phone_numbers').setValue(data.phone_numbers);
                 this.contactPanel.getForm().findField('full_address').setValue(data.full_address);
+                this.contactPanel.getForm().findField('info_text').setValue(data.info_text);
                 this.socialPanel.getForm().findField('facebook_page_url').setValue(data.facebook_page_url);
                 this.socialPanel.getForm().findField('google_page_url').setValue(data.google_page_url);
                 this.socialPanel.getForm().findField('twitter_page_url').setValue(data.twitter_page_url);
@@ -197,6 +207,7 @@ FOBO.ui.prototype.frontEndSettings.prototype.submitFormData = function() {
             restaurant_description: this.descriptionPanel.getForm().findField('restaurant_description').getValue(),
             phone_numbers: this.contactPanel.getForm().findField('phone_numbers').getValue(),
             full_address: this.contactPanel.getForm().findField('full_address').getValue(),
+            info_text: this.contactPanel.getForm().findField('info_text').getValue(),
             facebook_page_url: this.socialPanel.getForm().findField('facebook_page_url').getValue(),
             google_page_url: this.socialPanel.getForm().findField('google_page_url').getValue(),
             twitter_page_url: this.socialPanel.getForm().findField('twitter_page_url').getValue()
