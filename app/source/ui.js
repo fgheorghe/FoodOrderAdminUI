@@ -166,31 +166,26 @@ FOBO.ui.prototype.createMenuPanel = function() {
                 text: "Printer Activity",
                 role: 'printer-activity',
                 leaf: true
+            },
+            {
+                text: "Restaurant",
+                role: 'restaurant-settings',
+                leaf: true
             }, {
-                text: "Settings",
-                expanded: true,
-                children: [
-                    {
-                        text: "Restaurant",
-                        role: 'restaurant-settings',
-                        leaf: true
-                    }, {
-                        text: "Front End",
-                        role: 'front-end-settings',
-                        leaf: true
-                    }, {
-                        text: "Printer Users",
-                        role: 'printer-user-settings',
-                        leaf: true
-                    }, {
-                        text: "API Access Token",
-                        role: 'api-access-token-settings',
-                        leaf: true
-                    }
-                ]
+                text: "Front End",
+                role: 'front-end-settings',
+                leaf: true
+            }, {
+                text: "Printer Users",
+                role: 'printer-user-settings',
+                leaf: true
             }, {
                 text: "Users",
                 role: 'users',
+                leaf: true
+            }, {
+                text: "API Access Token",
+                role: 'api-access-token-settings',
                 leaf: true
             }, {
                 text: "Change Password",
