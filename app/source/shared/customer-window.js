@@ -68,12 +68,22 @@ FOBO.shared.customerWindow.prototype.createInputFields = function() {
         allowBlank: false,
         value: this.customerId ? this.customerData.address : ""
     });
+    this.passwordTextField = Ext.create( 'Ext.form.field.Text', {
+        fieldLabel: 'Password'
+        ,labelWidth: 120
+        ,width: 350
+        ,labelAlign: 'right'
+        ,inputType: 'password'
+        ,inputValue: true
+        ,allowBlank: this.customerId ? true : false
+    } );
     this.verifiedCustomer = Ext.create( 'Ext.form.field.Checkbox', {
         fieldLabel: 'Verified Customer'
         ,labelWidth: 120
         ,inputValue: true,
         checked: this.customerId && this.customerData.verified === 1 ? true : false
     } );
+
 }
 
 /**
@@ -91,7 +101,7 @@ FOBO.shared.customerWindow.prototype.createForm = function() {
             ,this.customerPhoneNumberField
             ,this.customerAddressField
             ,this.verifiedCustomer
-            // TODO: Add password support...somehow.
+            ,this.passwordTextField
         ]
         ,buttons: [{
             text: 'Reset',
@@ -116,6 +126,7 @@ FOBO.shared.customerWindow.prototype.createForm = function() {
                             ,address: this.customerAddressField.getValue()
                             ,email: this.customerEmailField.getValue()
                             ,verified: this.verifiedCustomer.getValue() !== true ? 0 : 1
+                            ,password: this.passwordTextField.getValue()
                         },
                         success: function(response, opts) {
                             this.customerLoadMask.hide();
@@ -145,7 +156,7 @@ FOBO.shared.customerWindow.prototype.createWindow = function() {
     this.window = Ext.create( 'Ext.window.Window', {
         title: this.customerId ? 'Edit Customer' : 'Add Customer'
         ,modal: true
-        ,height: 270
+        ,height: 290
         ,width: 380
         ,layout: 'fit'
         ,items: [ this.form ]
