@@ -83,6 +83,13 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
                     }
                 }.bind( this )
             }
+        }, {
+            fieldLabel: 'Domain name',
+            name: 'domain_name',
+            allowBlank: false,
+            labelAlign: 'right',
+            tabIndex: 2,
+            labelWidth: 150
         } ]
         ,buttons: [ {
             text: 'Reset',
@@ -141,6 +148,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'opening_time').setValue( data.opening_time );
                 this.form.getForm().findField( 'closing_time').setValue( data.closing_time );
                 this.form.getForm().findField( 'open_all_day').setValue( data.open_all_day );
+                this.form.getForm().findField( 'domain_name').setValue( data.domain_name );
             }
 
             // Hide the load mask.
@@ -167,7 +175,8 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             delivery_range: this.form.getForm().findField( 'delivery_range').getValue(),
             opening_time: opening_time_string,
             closing_time: closing_time_string,
-            open_all_day: this.form.getForm().findField( 'open_all_day').getValue() ? 1 : 0
+            open_all_day: this.form.getForm().findField( 'open_all_day').getValue() ? 1 : 0,
+            domain_name: this.form.getForm().findField( 'domain_name').getValue()
         },
         success: function(){
             this.loadMask.hide();

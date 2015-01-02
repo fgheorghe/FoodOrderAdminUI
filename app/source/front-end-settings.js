@@ -10,6 +10,30 @@ FOBO.ui.prototype.frontEndSettings = function() {
 };
 
 /**
+ * @function Removes an image, by making an Ajax call.
+ */
+FOBO.ui.prototype.frontEndSettings.prototype.removeImage = function() {
+    var selection = this.imageGridPanel.getView().getSelectionModel().getSelection();
+
+    if ( selection.length === 1 ) {
+        // TODO: Clean-up.
+        Ext.Ajax.request({
+            url: '/api/image/' + selection[0].raw.id,
+            method: "DELETE",
+            success: function(response, opts) {
+                this.imageGridPanel.getStore().load();
+            }.bind( this ),
+            failure: function(response, opts) {
+                // TODO: Implement.
+                console.log('server-side failure with status code ' + response.status);
+            }
+        });
+
+        this.deleteImageButton.setDisabled( true );
+    }
+}
+
+/**
  * Prepares tab panels.
  */
 FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
@@ -134,6 +158,99 @@ FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
             }.bind( this )
         } ]
     } );
+
+    this.deleteImageButton = Ext.create('Ext.button.Button', {
+        text: 'Delete',
+        disabled: true,
+        handler: this.removeImage.bind(this)
+    });
+
+    this.imageGridPanel = Ext.create('Ext.grid.Panel', {
+        title: 'Upload images',
+        frame: false,
+        border: false,
+        store: Ext.create( 'Ext.data.JsonStore', {
+            fields:[ 'id', 'name' ],
+            proxy:{
+                type:'rest',
+                url:'/api/images/',
+                reader:{
+                    type: 'json',
+                    root: 'data'
+                }
+            }
+        } ),
+        columns: [
+            { header: 'Name', dataIndex: 'name', flex: 1 },
+            { header: 'View', dataIndex: 'id', width: 50, renderer: function(id) {
+                return '<a href="/api/image/' + id + '" target="_blank">View</a>';
+            } }
+        ],
+        listeners: {
+            afterrender: function() {
+                this.imageGridPanel.getStore().load();
+            }.bind(this),
+            itemclick: function( grid, record, item, index, e, eOpts ) {
+                this.deleteImageButton.setDisabled(false);
+            }.bind( this )
+        },
+        tbar: [{
+            text: 'Upload',
+            handler: this.createUploadImageWindow.bind(this)
+        }, this.deleteImageButton]
+    });
+}
+
+// File upload window.
+FOBO.ui.prototype.frontEndSettings.prototype.createUploadImageWindow = function() {
+    var form = Ext.create( 'Ext.form.Panel', {
+        bodyPadding: 5,
+        frame: false,
+        border: false,
+        buttons: [{
+            text: 'Upload',
+            handler: function() {
+                if(form.isValid()){
+                    // Create a load mask.
+                    var uploadMask = new Ext.LoadMask( win.getEl(), { msg:"Please wait..."} );
+                    uploadMask.show();
+
+                    form.submit({
+                        url: '/api/upload-image/',
+                        success: function() {
+                            this.imageGridPanel.getStore().load();
+                            uploadMask.hide();
+                            win.close();
+                        }.bind(this)
+                    });
+                    // TODO: Handle errors.
+                }
+            }.bind( this )
+        }, {
+            text: 'Cancel',
+            handler: function() {
+                win.close();
+            }
+        }],
+        items: [Ext.create( 'Ext.form.field.File', {
+            labelAlign: 'right',
+            value: 0,
+            width: 250,
+            name: 'image',
+            labelWidth: 120,
+            allowBlank: false,
+            readOnly: true
+        } )]
+    }), win = Ext.create('Ext.window.Window', {
+        title: 'Upload image',
+        modal: true,
+        height: 120,
+        width: 280,
+        layout: 'fit',
+        items: [form]
+    });
+
+    win.show();
 }
 
 /**
@@ -146,8 +263,7 @@ FOBO.ui.prototype.frontEndSettings.prototype.init = function() {
     // Panel itself.
     this.panel = Ext.create( 'Ext.tab.Panel', {
         title: "Front End Settings"
-        // TODO: Implement.
-        ,items: [ this.descriptionPanel, this.socialPanel, this.contactPanel ]
+        ,items: [ this.descriptionPanel, this.socialPanel, this.contactPanel, this.imageGridPanel ]
         ,layout: 'fit'
         ,listeners: {
             render: this.loadSettings.bind( this )
