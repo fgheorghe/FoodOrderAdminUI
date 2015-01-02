@@ -84,8 +84,15 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
                 }.bind( this )
             }
         }, {
-            fieldLabel: 'Domain name',
+            fieldLabel: 'Domain Name',
             name: 'domain_name',
+            allowBlank: false,
+            labelAlign: 'right',
+            tabIndex: 2,
+            labelWidth: 150
+        }, {
+            fieldLabel: 'Domain Name Alias',
+            name: 'domain_name_alias',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
@@ -149,6 +156,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'closing_time').setValue( data.closing_time );
                 this.form.getForm().findField( 'open_all_day').setValue( data.open_all_day );
                 this.form.getForm().findField( 'domain_name').setValue( data.domain_name );
+                this.form.getForm().findField( 'domain_name_alias').setValue( data.domain_name_alias );
             }
 
             // Hide the load mask.
@@ -176,7 +184,8 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             opening_time: opening_time_string,
             closing_time: closing_time_string,
             open_all_day: this.form.getForm().findField( 'open_all_day').getValue() ? 1 : 0,
-            domain_name: this.form.getForm().findField( 'domain_name').getValue()
+            domain_name: this.form.getForm().findField( 'domain_name').getValue(),
+            domain_name_alias: this.form.getForm().findField( 'domain_name_alias').getValue()
         },
         success: function(){
             this.loadMask.hide();
