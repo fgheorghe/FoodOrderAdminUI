@@ -165,12 +165,47 @@ FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
         handler: this.removeImage.bind(this)
     });
 
+    // Prepare row editing plugin
+    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+        listeners: {
+            edit: function( editor, event ) {
+                var menuItem = {
+                    id: event.record.data.id,
+                    link: event.record.data.link,
+                    type: event.record.data.type,
+                    name: event.record.data.name
+                };
+
+                // TODO: Clean-up.
+                Ext.Ajax.request({
+                    url: '/api/image/' + event.record.raw.id,
+                    method: "POST",
+                    params: menuItem,
+                    success: function(response, opts) {
+                        this.imageGridPanel.getStore().load();
+                        window.close();
+                    }.bind( this ),
+                    failure: function(response, opts) {
+                        // TODO: Implement.
+                        console.log('server-side failure with status code ' + response.status);
+                    }
+                });
+            }.bind( this )
+        }
+    });
+
+    this.imageTypeComboStore = Ext.create('Ext.data.Store', {
+        fields: [ 'id', 'type_name' ],
+        data : Common.Image.Types
+    } );
+
     this.imageGridPanel = Ext.create('Ext.grid.Panel', {
         title: 'Upload images',
         frame: false,
         border: false,
+        plugins: [ rowEditing ],
         store: Ext.create( 'Ext.data.JsonStore', {
-            fields:[ 'id', 'name' ],
+            fields:[ 'id', 'name', 'link', 'type' ],
             proxy:{
                 type:'rest',
                 url:'/api/images/',
@@ -181,6 +216,23 @@ FOBO.ui.prototype.frontEndSettings.prototype.createPanels = function() {
             }
         } ),
         columns: [
+            { header: 'Link', dataIndex: 'link',field: { xtype: 'textfield' }, width: 250 },
+            { header: 'Type', field: {
+                xtype: 'combo',
+                store: this.imageTypeComboStore,
+                name: 'type',
+                queryMode: 'local',
+                displayField: 'type_name',
+                valueField: 'id',
+                labelAlign: 'right',
+                editable: false,
+                allowBlank: false
+            }, dataIndex: 'type', width: 100, renderer: function(value) {
+                if (Common.Image._Cached.Types[value]) {
+                    return Common.Image._Cached.Types[value];
+                }
+                return "";
+            } },
             { header: 'Name', dataIndex: 'name', flex: 1 },
             { header: 'View', dataIndex: 'id', width: 50, renderer: function(id) {
                 return '<a href="/api/image/' + id + '" target="_blank">View</a>';

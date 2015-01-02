@@ -6,6 +6,15 @@
  * @namespace Common variables namespace.
  */
 var Common = {
+    Image: {
+        Types: [
+            { id: 0, type_name: 'None' },
+            { id: 1, type_name: 'Logo' },
+            { id: 2, type_name: 'Fact 1' },
+            { id: 3, type_name: 'Fact 2' },
+            { id: 4, type_name: 'Fact 3' }
+        ]
+    },
     FoodMenu: {
         // TODO: Load from database, and add proper types.
         // From table menu_item_sizes, used by combo stores.
@@ -82,5 +91,16 @@ _.each( Common.Users, function( value, key ) {
     // And cache its items
     _.each( value, function( _value, _key ) {
         Common.Users._Cached[key][_value.id] = _value.role_name;
+    } );
+} );
+
+// Cache image types.
+Common.Image._Cached = {};
+_.each( Common.Image, function( value, key ) {
+    // Prepare cache object
+    Common.Image._Cached[key] = {};
+    // And cache its items
+    _.each( value, function( _value, _key ) {
+        Common.Image._Cached[key][_value.id] = _value.type_name;
     } );
 } );
