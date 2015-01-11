@@ -12,7 +12,8 @@ var Common = {
             { id: 1, type_name: 'Logo' },
             { id: 2, type_name: 'Fact 1' },
             { id: 3, type_name: 'Fact 2' },
-            { id: 4, type_name: 'Fact 3' }
+            { id: 4, type_name: 'Fact 3' },
+            { id: 5, type_name: 'Banner' }
         ]
     },
     FoodMenu: {
