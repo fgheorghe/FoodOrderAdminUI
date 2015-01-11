@@ -113,6 +113,9 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
         case "change-password":
             componentName = "changePassword";
             break;
+        case "barclays-payment-settings":
+            componentName = "barclaysPaymentSettings";
+            break;
         case "logout":
             this.doLogout();
             // Stop execution, this button is handled localy.
@@ -174,6 +177,10 @@ FOBO.ui.prototype.createMenuPanel = function() {
             }, {
                 text: "Front End",
                 role: 'front-end-settings',
+                leaf: true
+            }, {
+                text: "Barclays Payment Settings",
+                role: 'barclays-payment-settings',
                 leaf: true
             }, {
                 text: "Printer Users",
