@@ -25,17 +25,39 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 1,
-            labelWidth: 150,
+            labelWidth: 200
         }, {
             fieldLabel: 'Restaurant Post Code',
             name: 'restaurant_post_code',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
-            labelWidth: 150,
+            labelWidth: 200
+        }, {
+            fieldLabel: 'Default Delivery Time (minutes)',
+            labelWidth: 200,
+            name: 'default_delivery_time',
+            xtype: 'numberfield',
+            allowBlank: false,
+            labelAlign: 'right',
+            tabIndex: 3,
+            minValue: 10,
+            allowDecimals: false,
+            step: 1
+        }, {
+            fieldLabel: 'Default Collection Time (minutes)',
+            labelWidth: 200,
+            name: 'default_collection_time',
+            xtype: 'numberfield',
+            allowBlank: false,
+            labelAlign: 'right',
+            tabIndex: 3,
+            minValue: 10,
+            allowDecimals: false,
+            step: 1
         }, {
             fieldLabel: 'Delivery Range (miles)',
-            labelWidth: 150,
+            labelWidth: 200,
             name: 'delivery_range',
             xtype: 'numberfield',
             allowBlank: false,
@@ -52,7 +74,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             maxValue: '8:00 PM',
             name: "opening_time",
             increment: 30,
-            labelWidth: 150,
+            labelWidth: 200,
             labelAlign: 'right',
             format: 'H:i'
         }, {
@@ -63,13 +85,13 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             maxValue: '8:00 PM',
             increment: 30,
             labelAlign: 'right',
-            labelWidth: 150,
+            labelWidth: 200,
             format: 'H:i'
         }, {
             xtype: 'checkboxfield',
             fieldLabel: 'Open all day',
             labelAlign: 'right',
-            labelWidth: 150,
+            labelWidth: 200,
             name: "open_all_day",
             listeners: {
                 // Enable / disable the opening / closing time fields.
@@ -89,14 +111,14 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
-            labelWidth: 150
+            labelWidth: 200
         }, {
             fieldLabel: 'Domain Name Alias',
             name: 'domain_name_alias',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
-            labelWidth: 150
+            labelWidth: 200
         } ]
         ,buttons: [ {
             text: 'Reset',
@@ -157,6 +179,8 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'open_all_day').setValue( data.open_all_day );
                 this.form.getForm().findField( 'domain_name').setValue( data.domain_name );
                 this.form.getForm().findField( 'domain_name_alias').setValue( data.domain_name_alias );
+                this.form.getForm().findField( 'default_collection_time').setValue( data.default_collection_time );
+                this.form.getForm().findField( 'default_delivery_time').setValue( data.default_delivery_time );
             }
 
             // Hide the load mask.
@@ -185,7 +209,9 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             closing_time: closing_time_string,
             open_all_day: this.form.getForm().findField( 'open_all_day').getValue() ? 1 : 0,
             domain_name: this.form.getForm().findField( 'domain_name').getValue(),
-            domain_name_alias: this.form.getForm().findField( 'domain_name_alias').getValue()
+            domain_name_alias: this.form.getForm().findField( 'domain_name_alias').getValue(),
+            default_collection_time: this.form.getForm().findField( 'default_collection_time').getValue(),
+            default_delivery_time: this.form.getForm().findField( 'default_delivery_time').getValue()
         },
         success: function(){
             this.loadMask.hide();
