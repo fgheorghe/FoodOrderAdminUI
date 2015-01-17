@@ -12,15 +12,17 @@ FOBO.ui.prototype.orders = function() {
 /**
  * @function Creates a window used for generating orders.
  */
-FOBO.ui.prototype.orders.prototype.createOrderWindowStore = function() {
+FOBO.ui.prototype.orders.prototype.createOrderWindowStore = function(order) {
     this.orderWindowStore = Ext.create( 'Ext.data.JsonStore', {
-        fields:[ 'id', { name: 'category_id', type: 'int' }, 'item_name', 'size_id', 'price', 'item_number' ],
+        fields:[ 'id', 'count', { name: 'category_id', type: 'int' }, 'item_name', 'size_id', 'price', 'item_number' ],
         autoLoad: {
             callback: this.populateWithOrderData.bind( this )
         },
         proxy:{
             type:'rest',
-            url:'/api/menu-items/',
+            // If no order is set put an id of 0, to have default counts included. If an order is set, pass in the
+            // the order id to get counts.
+            url:'/api/menu-items/?order_id=' + (order ? order.id : 0),
             reader:{
                 type: 'json',
                 root:'data'
@@ -127,23 +129,11 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 this.postCodeField.setValue( order.post_code );
             }.bind(this));
             this.notesField.setValue( order.notes );
-
-            // Select grid items.
-            for ( ; i < order.items.length; i++ ) {
-                ids[order.items[i].menu_item_id] = true;
-            }
-
-            this.orderWindowStore.each(function(record,idx){
-                if ( ids[record.raw.id] === true ) {
-                    indexArray.push( idx );
-                    this.menuItemsGrid.getSelectionModel().select( idx, true, true );
-                }
-            }.bind( this ) );
         }
     }
 
     // TODO: Avoid doing this step twice.
-    this.createOrderWindowStore();
+    this.createOrderWindowStore(order);
 
     this.categoryComboStore = Ext.create('Ext.data.Store', {
         fields: [ 'id', 'category_name' ],
@@ -461,18 +451,21 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         labelWidth: 120
     } );
 
-    // Create selection model
-    var sm = Ext.create('Ext.selection.CheckboxModel', {
+    // Prepare row editing plugin for updating order item count.
+    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+        clicksToEdit: 0,
         listeners: {
-            selectionchange: function( me, selected, eOpts ) {
-                var price = 0
-                    ,discount = this.discountField.getValue() ? this.discountField.getValue() : 0;
-                for ( var i = 0; i < selected.length; i++ ) {
-                    price += selected[i].data.price;
-                }
+            afteredit: function(editor, context) {
+                // First, commit changes to memory.
+                context.record.commit();
+                // Recalculate prices.
+                var price = 0, discount = this.discountField.getValue() ? this.discountField.getValue() : 0;
+                this.menuItemsGrid.getStore().each(function(record) {
+                    price += record.data.price * record.data.count;
+                }, this);
                 this.totalField.setValue( price.toFixed( 2 ) );
                 this.finalField.setValue( ( price - price * discount / 100 ).toFixed( 2 ) );
-            }.bind( this )
+            }.bind(this)
         }
     });
 
@@ -481,7 +474,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         title: 'Food Menu Items',
         height: 300,
         region: 'north',
-        selModel: sm,
+        plugins: [ rowEditing ],
         frame: false,
         border: false,
         tbar: [  {
@@ -495,6 +488,13 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         } ],
         store: this.orderWindowStore,
         columns: [
+            { header: 'Count', dataIndex: 'count',field: {
+                xtype: 'numberfield',
+                allowBlank: false,
+                minValue: 0,
+                allowDecimals: false,
+                step: 1
+            } },
             { header: 'Category', dataIndex: 'category_id', renderer: function( value ) {
                 var categoryName = "n/a";
                 for ( var i = 0; i < Common.FoodMenu.MenuItemCategories.length; i++ ) {
@@ -507,7 +507,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             { header: 'Name', dataIndex: 'item_name', flex: 1,
                 renderer: Util.textColumnRenderer
             },
-            { header: 'Number',field: { xtype: 'textfield' },  dataIndex: 'item_number', width: 80 },
+            { header: 'Number', dataIndex: 'item_number', width: 80 },
             { header: 'Size', dataIndex: 'size_id', renderer: function( value ) {
                 var sizeName = "n/a";
                 for ( var i = 0; i < Common.FoodMenu.MenuItemSizes.length; i++ ) {
@@ -537,7 +537,6 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         buttons: [{
             text: 'Reset',
             handler: function() {
-                sm.deselectAll();
                 form.getForm().reset();
                 this.populateWithOrderData();
             }.bind( this )
@@ -549,18 +548,20 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 if ( form.getForm().isValid() ) {
                     // Prepare Ajax request data
                     var orderItems = []
-                        ,selections = sm.getSelection()
                         ,i
                         ,url = order ? '/api/order/' + order.id : '/api/order/'
                         ,method = 'POST';
 
-                    for ( i = 0; i < selections.length; i++ ) {
-                        orderItems.push( {
-                            id: selections[i].raw.id
-                            ,size_id: selections[i].raw.size_id
-                            ,count: 1
-                        } );
-                    }
+                    this.menuItemsGrid.getStore().each(function(record) {
+                        if (record.data.count) {
+                            orderItems.push( {
+                                id: record.data.id
+                                ,size_id: record.data.size_id
+                                ,count: record.data.count
+                            } );
+                        }
+                    }, this);
+
                     this.orderLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
                     this.orderLoadMask.show();
                     Ext.Ajax.request({
