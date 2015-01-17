@@ -40,6 +40,7 @@ FOBO.ui.prototype.orders.prototype.refreshData = function() {
     this.paymentStatusSearchCombo.clearValue();
     this.customerNameSearchField.setValue();
     this.phoneNumberSearchField.setValue();
+    this.referenceSearchField.setValue();
 
     // Reload data.
     this.panel.getStore().load();
@@ -102,6 +103,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         var i = 0, ids = {}, indexArray = [];
         if ( order ) {
             // Begin populating form.
+            this.orderReferenceField.setValue( order.reference );
             this.orderTypeCombo.setValue( order.order_type );
             this.deliveryTypeCombo.setValue( order.delivery_type );
             this.customerTypeCombo.setValue( order.customer_type );
@@ -176,6 +178,14 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         fieldLabel: 'Name',
         width: 250,
         labelWidth: 50,
+        labelAlign: 'right',
+        xtype: 'textfield'
+    } );
+
+    this.orderReferenceField = Ext.create( 'Ext.form.field.Text', {
+        fieldLabel: 'Reference',
+        width: 250,
+        labelWidth: 120,
         labelAlign: 'right',
         xtype: 'textfield'
     } );
@@ -569,6 +579,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                             ,customer_id: this.customerNameField.getValue() ? "" : this.customerNameField.getValue()
                             ,delivery_type: this.deliveryTypeCombo.getValue()
                             ,discount: this.discountField.getValue()
+                            ,reference: this.orderReferenceField.getValue()
                         },
                         success: function(response, opts) {
                             this.orderLoadMask.hide();
@@ -586,7 +597,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         }],
         autoScroll: true,
         items: [
-            this.orderTypeCombo
+            this.orderReferenceField
+            ,this.orderTypeCombo
             ,this.deliveryTypeCombo
             ,this.customerTypeCombo
             ,this.paymentStatusCombo
@@ -663,7 +675,8 @@ FOBO.ui.prototype.orders.prototype.searchOrders = function() {
             customer_type: this.customerTypeSearchCombo.getValue(),
             payment_status: this.paymentStatusSearchCombo.getValue(),
             customer_name: this.customerNameSearchField.getValue(),
-            customer_phone_number: this.phoneNumberSearchField.getValue()
+            customer_phone_number: this.phoneNumberSearchField.getValue(),
+            reference: this.referenceSearchField.getValue()
         }
     } );
 }
@@ -767,6 +780,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
     this.store = Ext.create( 'Ext.data.JsonStore', {
         fields:[
             'id',
+            'reference',
             { name: 'total_price', type: 'double' },
             'delivery_address',
             'item_count',
@@ -905,6 +919,13 @@ FOBO.ui.prototype.orders.prototype.init = function() {
         xtype: 'textfield'
     } );
 
+    this.referenceSearchField = Ext.create( 'Ext.form.field.Text', {
+        fieldLabel: 'Reference',
+        labelWidth: 100,
+        labelAlign: 'right',
+        xtype: 'textfield'
+    } );
+
     this.phoneNumberSearchField = Ext.create( 'Ext.form.field.Text', {
         fieldLabel: 'Phone Number',
         labelWidth: 100,
@@ -920,6 +941,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             { header: 'Created By', dataIndex: 'created_by', width: 100,
                 renderer: Util.textColumnRenderer
             },
+            { header: 'Reference', dataIndex: 'reference', width: 100 },
             { header: 'Order Type', dataIndex: 'order_type', width: 90, renderer: function( value ) {
                 return Common.OrderConstants._Cached.OrderTypes[value];
             } },
@@ -1004,7 +1026,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             },
             {
                 xtype: 'toolbar'
-                ,items: [ this.customerNameSearchField, this.phoneNumberSearchField, {
+                ,items: [ this.customerNameSearchField, this.phoneNumberSearchField, this.referenceSearchField, {
                     xtype: 'button'
                     ,text: 'Search'
                     ,handler: this.searchOrders.bind( this )
