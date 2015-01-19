@@ -119,6 +119,13 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             labelAlign: 'right',
             tabIndex: 2,
             labelWidth: 200
+        }, {
+            fieldLabel: 'Order Confirmation From',
+            name: 'order_confirmation_from',
+            allowBlank: false,
+            labelAlign: 'right',
+            tabIndex: 2,
+            labelWidth: 200
         } ]
         ,buttons: [ {
             text: 'Reset',
@@ -181,6 +188,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'domain_name_alias').setValue( data.domain_name_alias );
                 this.form.getForm().findField( 'default_collection_time').setValue( data.default_collection_time );
                 this.form.getForm().findField( 'default_delivery_time').setValue( data.default_delivery_time );
+                this.form.getForm().findField( 'order_confirmation_from').setValue( data.order_confirmation_from );
             }
 
             // Hide the load mask.
@@ -211,7 +219,8 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             domain_name: this.form.getForm().findField( 'domain_name').getValue(),
             domain_name_alias: this.form.getForm().findField( 'domain_name_alias').getValue(),
             default_collection_time: this.form.getForm().findField( 'default_collection_time').getValue(),
-            default_delivery_time: this.form.getForm().findField( 'default_delivery_time').getValue()
+            default_delivery_time: this.form.getForm().findField( 'default_delivery_time').getValue(),
+            order_confirmation_from: this.form.getForm().findField( 'order_confirmation_from').getValue()
         },
         success: function(){
             this.loadMask.hide();

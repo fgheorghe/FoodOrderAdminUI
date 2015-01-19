@@ -102,7 +102,6 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
 
     // Used for populating the form with order data.
     this.populateWithOrderData = function() {
-        var i = 0, ids = {}, indexArray = [];
         if ( order ) {
             // Begin populating form.
             this.orderReferenceField.setValue( order.reference );
@@ -406,11 +405,12 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 this.phoneNumberField.setValue( selection[0].data.phone_number );
                 this.addressField.setValue( selection[0].data.address );
                 this.postCodeField.setValue( selection[0].data.post_code );
+                // Set the input field as not 'dirty'.
+                this.customerNameField.dirty = false;
             }.bind( this )
             ,change: function() {
-                // Reset selection.
-                this._selectedCustomer = null;
-
+                // Set this input field as 'dirty'
+                this.customerNameField.dirty = true;
                 // Disable editing an existing customer is found.
                 this.editCustomerButton.setDisabled( true );
             }.bind( this )
@@ -544,11 +544,9 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             // TODO: Only allow updating if certain order statuses.
             text: order ? 'Update' : 'Create'
             ,handler: function() {
-                var orderItems;
                 if ( form.getForm().isValid() ) {
                     // Prepare Ajax request data
                     var orderItems = []
-                        ,i
                         ,url = order ? '/api/order/' + order.id : '/api/order/'
                         ,method = 'POST';
 
@@ -577,7 +575,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                             ,customer_type: this.customerTypeCombo.getValue()
                             ,customer_phone_number: this.phoneNumberField.getValue()
                             ,customer_name: this.customerNameField.getRawValue()
-                            ,customer_id: this.customerNameField.getValue() ? "" : this.customerNameField.getValue()
+                            ,customer_id: this.customerNameField.dirty ? "" : this.customerNameField.getValue()
                             ,delivery_type: this.deliveryTypeCombo.getValue()
                             ,discount: this.discountField.getValue()
                             ,reference: this.orderReferenceField.getValue()
