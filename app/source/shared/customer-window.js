@@ -129,12 +129,23 @@ FOBO.shared.customerWindow.prototype.createForm = function() {
                             ,password: this.passwordTextField.getValue()
                         },
                         success: function(response, opts) {
+                            var data;
                             this.customerLoadMask.hide();
                             this.window.close();
 
-                            // Call a configured callback.
-                            if (this.cb) {
-                                this.cb();
+                            try {
+                                data = Ext.decode( response.responseText );
+                            } catch ( Ex ) {
+                                // Do nothing.
+                            }
+
+                            if (data.success !== true) {
+                                Ext.Msg.alert('Can not ' + (this.customerId ? 'update' : 'create') + ' customer', data.reason);
+                            } else {
+                                // Call a configured callback.
+                                if (this.cb) {
+                                    this.cb();
+                                }
                             }
                         }.bind( this ),
                         failure: function(response, opts) {
