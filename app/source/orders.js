@@ -696,7 +696,7 @@ FOBO.ui.prototype.orders.prototype.reprintOrder = function() {
 
     Ext.Msg.show( {
         title:'Reprint order?',
-        msg: 'Reprinting an order using the web interface will send a customer notification email. If this is not the intention, please use the printer reprint function. Continue?',
+        msg: 'Reprinting an order using the Web Interface will send a customer notification email. If this is not the intention, please use the printer reprint function. Continue?',
         buttons: Ext.Msg.YESNO,
         icon: Ext.Msg.WARNING,
         fn: function( btn ) {
@@ -983,6 +983,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
         title: 'Orders',
         store: this.store,
         columns: [
+            { header: 'Id', dataIndex: 'id', width: 60 },
             { header: 'Created By', dataIndex: 'created_by', width: 100,
                 renderer: Util.textColumnRenderer
             },
