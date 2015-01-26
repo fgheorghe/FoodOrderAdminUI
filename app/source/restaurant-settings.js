@@ -56,6 +56,17 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             allowDecimals: false,
             step: 1
         }, {
+            fieldLabel: 'Minimum Website Order Value',
+            labelWidth: 200,
+            name: 'minimum_website_order_value',
+            xtype: 'numberfield',
+            allowBlank: false,
+            labelAlign: 'right',
+            tabIndex: 3,
+            minValue: 0,
+            allowDecimals: false,
+            step: 1
+        }, {
             fieldLabel: 'Delivery Range (miles)',
             labelWidth: 200,
             name: 'delivery_range',
@@ -189,6 +200,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'default_collection_time').setValue( data.default_collection_time );
                 this.form.getForm().findField( 'default_delivery_time').setValue( data.default_delivery_time );
                 this.form.getForm().findField( 'order_confirmation_from').setValue( data.order_confirmation_from );
+                this.form.getForm().findField( 'minimum_website_order_value').setValue( data.minimum_website_order_value );
             }
 
             // Hide the load mask.
@@ -220,7 +232,8 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             domain_name_alias: this.form.getForm().findField( 'domain_name_alias').getValue(),
             default_collection_time: this.form.getForm().findField( 'default_collection_time').getValue(),
             default_delivery_time: this.form.getForm().findField( 'default_delivery_time').getValue(),
-            order_confirmation_from: this.form.getForm().findField( 'order_confirmation_from').getValue()
+            order_confirmation_from: this.form.getForm().findField( 'order_confirmation_from').getValue(),
+            minimum_website_order_value: this.form.getForm().findField( 'minimum_website_order_value').getValue()
         },
         success: function(){
             this.loadMask.hide();
