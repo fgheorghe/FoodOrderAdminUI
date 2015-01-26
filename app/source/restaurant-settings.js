@@ -137,6 +137,13 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             labelAlign: 'right',
             tabIndex: 2,
             labelWidth: 200
+        }, {
+            fieldLabel: 'Site Contact Recipient Email',
+            name: 'site_contact_recipient_email',
+            allowBlank: false,
+            labelAlign: 'right',
+            tabIndex: 2,
+            labelWidth: 200
         } ]
         ,buttons: [ {
             text: 'Reset',
@@ -201,6 +208,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'default_delivery_time').setValue( data.default_delivery_time );
                 this.form.getForm().findField( 'order_confirmation_from').setValue( data.order_confirmation_from );
                 this.form.getForm().findField( 'minimum_website_order_value').setValue( data.minimum_website_order_value );
+                this.form.getForm().findField( 'site_contact_recipient_email').setValue( data.site_contact_recipient_email );
             }
 
             // Hide the load mask.
@@ -233,7 +241,8 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             default_collection_time: this.form.getForm().findField( 'default_collection_time').getValue(),
             default_delivery_time: this.form.getForm().findField( 'default_delivery_time').getValue(),
             order_confirmation_from: this.form.getForm().findField( 'order_confirmation_from').getValue(),
-            minimum_website_order_value: this.form.getForm().findField( 'minimum_website_order_value').getValue()
+            minimum_website_order_value: this.form.getForm().findField( 'minimum_website_order_value').getValue(),
+            site_contact_recipient_email: this.form.getForm().findField( 'site_contact_recipient_email').getValue()
         },
         success: function(){
             this.loadMask.hide();
