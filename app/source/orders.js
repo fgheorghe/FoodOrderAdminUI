@@ -694,20 +694,30 @@ FOBO.ui.prototype.orders.prototype.reprintOrder = function() {
     var selection = this.panel.getSelectionModel().getSelection()[0],
         order_id = selection.raw.id;
 
-    this.loadMask.show();
-    Ext.Ajax.request({
-        url: '/api/order/' + order_id + '/reprint/',
-        method: 'POST',
-        success: function(response,opts) {
-            this.refreshData();
-            this.loadMask.hide();
+    Ext.Msg.show( {
+        title:'Reprint order?',
+        msg: 'Reprinting an order using the web interface will send a customer notification email. If this is not the intention, please use the printer reprint function. Continue?',
+        buttons: Ext.Msg.YESNO,
+        icon: Ext.Msg.WARNING,
+        fn: function( btn ) {
+            if ( btn === 'yes' ) {
+                this.loadMask.show();
+                Ext.Ajax.request({
+                    url: '/api/order/' + order_id + '/reprint/',
+                    method: 'POST',
+                    success: function(response,opts) {
+                        this.refreshData();
+                        this.loadMask.hide();
+                    }.bind( this )
+                    ,failure: function(response, opts) {
+                        // TODO: Implement.
+                        console.log('server-side failure with status code ' + response.status);
+                        this.loadMask.hide();
+                    }.bind( this )
+                });
+            }
         }.bind( this )
-        ,failure: function(response, opts) {
-            // TODO: Implement.
-            console.log('server-side failure with status code ' + response.status);
-            this.loadMask.hide();
-        }.bind( this )
-    });
+    } );
 }
 
 /**
