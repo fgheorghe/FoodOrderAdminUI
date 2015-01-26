@@ -681,6 +681,36 @@ FOBO.ui.prototype.orders.prototype.searchOrders = function() {
 }
 
 /**
+ * Method used for reprinting an order.
+ * @function
+ */
+FOBO.ui.prototype.orders.prototype.reprintOrder = function() {
+    if ( !this.loadMask ) {
+        // Create a load mask to be shared.
+        this.loadMask = new Ext.LoadMask( this.panel.getEl(), { msg:"Please wait..."} );
+    }
+
+    // Prepare data.
+    var selection = this.panel.getSelectionModel().getSelection()[0],
+        order_id = selection.raw.id;
+
+    this.loadMask.show();
+    Ext.Ajax.request({
+        url: '/api/order/' + order_id + '/reprint/',
+        method: 'POST',
+        success: function(response,opts) {
+            this.refreshData();
+            this.loadMask.hide();
+        }.bind( this )
+        ,failure: function(response, opts) {
+            // TODO: Implement.
+            console.log('server-side failure with status code ' + response.status);
+            this.loadMask.hide();
+        }.bind( this )
+    });
+}
+
+/**
  * Method used for canceling an order.
  * @function
  */
@@ -851,12 +881,18 @@ FOBO.ui.prototype.orders.prototype.init = function() {
         }.bind( this )
     } );
 
-    // View map directions
     this.cancelOrderButton = Ext.create( 'Ext.button.Button', {
         type: 'button',
         text: 'Cancel Order',
         disabled: true,
         handler: this.cancelOrder.bind( this )
+    } );
+
+    this.reprintOrderButton = Ext.create( 'Ext.button.Button', {
+        type: 'button',
+        text: 'Reprint Order',
+        disabled: true,
+        handler: this.reprintOrder.bind( this )
     } );
 
     // Prepare search box stores.
@@ -997,10 +1033,17 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             itemclick: function( grid, record, item, index, e, eOpts ) {
                 this.viewDetailsButton.setDisabled( false );
                 this.viewMapDirectionsButton.setDisabled( false );
+
                 if ( record.data.status === 0 || record.data.status === 1 || record.data.status === 99 ) {
                     this.cancelOrderButton.setDisabled( false );
                 } else {
                     this.cancelOrderButton.setDisabled( true );
+                }
+
+                if (record.data.order_type === 1 || record.data.order_type === 2 || record.data.order_type === 3) {
+                    this.reprintOrderButton.setDisabled(false);
+                } else {
+                    this.reprintOrderButton.setDisabled(true);
                 }
             }.bind( this )
         },
@@ -1017,7 +1060,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
                     text: 'Refresh',
                     type: 'button',
                     handler: this.refreshData.bind( this )
-                }, this.cancelOrderButton ]
+                }, this.cancelOrderButton, this.reprintOrderButton ]
             },
             {
                 xtype: 'toolbar'
