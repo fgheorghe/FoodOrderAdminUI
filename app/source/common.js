@@ -68,7 +68,13 @@ var Common = {
             { id: 3, status: "Rejected" },
             { id: 99, status: "Error" }
         ]
-    }
+    },
+    // Discount types
+    Discounts: [
+        { id: 0, discount_name: "Percent off on all items" },
+        { id: 1, discount_name: "Free dish with order amount over" },
+        { id: 2, discount_name: "Free drink with order amount over" }
+    ]
 };
 
 /** Cache some of the common values, for use by renderers **/
