@@ -56,7 +56,7 @@ FOBO.ui.prototype.barclaysPaymentSettings.prototype.init = function() {
 
     // Panel itself.
     this.panel = Ext.create( 'Ext.panel.Panel', {
-        title: "Barclays Payment Settings"
+        title: "Payment Settings"
         ,items: [ this.form ]
         ,layout: 'fit'
         ,listeners: {

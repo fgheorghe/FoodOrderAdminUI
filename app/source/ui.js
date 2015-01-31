@@ -158,29 +158,28 @@ FOBO.ui.prototype.createMenuPanel = function() {
                 role: 'orders',
                 leaf: true
             }, {
-                text: "Customer Database",
-                role: 'customer-database',
-                leaf: true
-            }, {
                 text: "End of Sale Report",
                 role: 'eosr',
                 leaf: true
             }, {
-                text: "Printer Activity",
-                role: 'printer-activity',
+                text: "Customer Database",
+                role: 'customer-database',
                 leaf: true
-            },
-            {
-                text: "Restaurant",
+            }, {
+                text: "Restaurant Settings",
                 role: 'restaurant-settings',
                 leaf: true
             }, {
-                text: "Front End",
+                text: "Front End Settings",
                 role: 'front-end-settings',
                 leaf: true
             }, {
-                text: "Barclays Payment Settings",
+                text: "Payment Settings",
                 role: 'barclays-payment-settings',
+                leaf: true
+            }, {
+                text: "Printer Activity",
+                role: 'printer-activity',
                 leaf: true
             }, {
                 text: "Printer Users",
