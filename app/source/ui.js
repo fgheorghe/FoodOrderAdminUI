@@ -89,6 +89,9 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
         case "front-end-settings":
             componentName = "frontEndSettings";
             break;
+        case "front-end-discounts":
+            componentName = "frontEndDiscounts";
+            break;
         case "printer-user-settings":
             componentName = "printerUserSettings";
             break;
@@ -168,6 +171,10 @@ FOBO.ui.prototype.createMenuPanel = function() {
             }, {
                 text: "Restaurant Settings",
                 role: 'restaurant-settings',
+                leaf: true
+            }, {
+                text: "Front End Discounts",
+                role: 'front-end-discounts',
                 leaf: true
             }, {
                 text: "Front End Settings",
