@@ -25,17 +25,17 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 1,
-            labelWidth: 200
+            labelWidth: 250
         }, {
             fieldLabel: 'Restaurant Post Code',
             name: 'restaurant_post_code',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
-            labelWidth: 200
+            labelWidth: 250
         }, {
             fieldLabel: 'Default Delivery Time (minutes)',
-            labelWidth: 200,
+            labelWidth: 250,
             name: 'default_delivery_time',
             xtype: 'numberfield',
             allowBlank: false,
@@ -46,7 +46,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             step: 1
         }, {
             fieldLabel: 'Default Collection Time (minutes)',
-            labelWidth: 200,
+            labelWidth: 250,
             name: 'default_collection_time',
             xtype: 'numberfield',
             allowBlank: false,
@@ -56,8 +56,8 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             allowDecimals: false,
             step: 1
         }, {
-            fieldLabel: 'Minimum Website Order Value',
-            labelWidth: 200,
+            fieldLabel: 'Minimum Website Delivery Order Value',
+            labelWidth: 250,
             name: 'minimum_website_order_value',
             xtype: 'numberfield',
             allowBlank: false,
@@ -68,7 +68,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             step: 1
         }, {
             fieldLabel: 'Delivery Range (miles)',
-            labelWidth: 200,
+            labelWidth: 250,
             name: 'delivery_range',
             xtype: 'numberfield',
             allowBlank: false,
@@ -85,7 +85,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             maxValue: '8:00 PM',
             name: "opening_time",
             increment: 30,
-            labelWidth: 200,
+            labelWidth: 250,
             labelAlign: 'right',
             format: 'H:i'
         }, {
@@ -96,13 +96,13 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             maxValue: '8:00 PM',
             increment: 30,
             labelAlign: 'right',
-            labelWidth: 200,
+            labelWidth: 250,
             format: 'H:i'
         }, {
             xtype: 'checkboxfield',
             fieldLabel: 'Open all day',
             labelAlign: 'right',
-            labelWidth: 200,
+            labelWidth: 250,
             name: "open_all_day",
             listeners: {
                 // Enable / disable the opening / closing time fields.
@@ -122,28 +122,28 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
-            labelWidth: 200
+            labelWidth: 250
         }, {
             fieldLabel: 'Domain Name Alias',
             name: 'domain_name_alias',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
-            labelWidth: 200
+            labelWidth: 250
         }, {
             fieldLabel: 'Order Confirmation From',
             name: 'order_confirmation_from',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
-            labelWidth: 200
+            labelWidth: 250
         }, {
             fieldLabel: 'Site Contact Recipient Email',
             name: 'site_contact_recipient_email',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
-            labelWidth: 200
+            labelWidth: 250
         } ]
         ,buttons: [ {
             text: 'Reset',
