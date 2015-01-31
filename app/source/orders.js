@@ -994,14 +994,14 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             { header: 'Items', dataIndex: 'item_count', width: 80 },
             { header: 'Total Price', dataIndex: 'total_price', width: 90, renderer: function( value ) {
                 if (value) {
-                    return parseInt( value, 10).toFixed( 2 );
+                    return value.toFixed( 2 );
                 }
                 return 0;
             } },
             { header: 'Discount (%)', dataIndex: 'discount', width: 90 },
             { header: 'Final Price', dataIndex: 'final_price', width: 90, renderer: function( value ) {
                 if (value) {
-                    return parseInt( value, 10).toFixed( 2 );
+                    return value.toFixed( 2 );
                 }
                 return 0;
             } },
