@@ -14,7 +14,7 @@ Ext.require([
 ]);
 
 /**
- * @nemspace Provides the application namespace.
+ * @namespace Provides the application namespace.
  */
 var FOBO = {
     // For storing shared objects.
