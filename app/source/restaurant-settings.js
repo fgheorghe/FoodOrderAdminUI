@@ -79,6 +79,24 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             decimalPrecision: 1,
             step: 0.4
         }, {
+            xtype: 'checkboxfield',
+            fieldLabel: 'Open All Day',
+            labelAlign: 'right',
+            labelWidth: 250,
+            name: "open_all_day",
+            listeners: {
+                // Enable / disable the opening / closing time fields.
+                change: function( field, newValue ) {
+                    if ( newValue === true ) {
+                        this.form.getForm().findField( 'opening_time' ).setDisabled( true );
+                        this.form.getForm().findField( 'closing_time' ).setDisabled( true );
+                    } else {
+                        this.form.getForm().findField( 'opening_time' ).setDisabled( false );
+                        this.form.getForm().findField( 'closing_time' ).setDisabled( false );
+                    }
+                }.bind( this )
+            }
+        }, {
             xtype: 'timefield',
             fieldLabel: 'Opening Time',
             minValue: '6:00 AM',
@@ -100,22 +118,44 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             format: 'H:i'
         }, {
             xtype: 'checkboxfield',
-            fieldLabel: 'Open all day',
+            fieldLabel: 'Lunch Break',
             labelAlign: 'right',
             labelWidth: 250,
-            name: "open_all_day",
+            name: "lunch_break",
             listeners: {
                 // Enable / disable the opening / closing time fields.
                 change: function( field, newValue ) {
-                    if ( newValue === true ) {
-                        this.form.getForm().findField( 'opening_time' ).setDisabled( true );
-                        this.form.getForm().findField( 'closing_time' ).setDisabled( true );
+                    if ( newValue === false ) {
+                        this.form.getForm().findField( 'lunch_break_end' ).setDisabled( true );
+                        this.form.getForm().findField( 'lunch_break_start' ).setDisabled( true );
                     } else {
-                        this.form.getForm().findField( 'opening_time' ).setDisabled( false );
-                        this.form.getForm().findField( 'closing_time' ).setDisabled( false );
+                        this.form.getForm().findField( 'lunch_break_end' ).setDisabled( false );
+                        this.form.getForm().findField( 'lunch_break_start' ).setDisabled( false );
                     }
                 }.bind( this )
             }
+        }, {
+            xtype: 'timefield',
+            fieldLabel: 'Lunch Break Start',
+            minValue: '6:00 AM',
+            maxValue: '8:00 PM',
+            name: "lunch_break_start",
+            disabled: true,
+            increment: 30,
+            labelWidth: 250,
+            labelAlign: 'right',
+            format: 'H:i'
+        }, {
+            xtype: 'timefield',
+            fieldLabel: 'Lunch Break End',
+            disabled: true,
+            minValue: '6:00 AM',
+            name: "lunch_break_end",
+            maxValue: '8:00 PM',
+            increment: 30,
+            labelAlign: 'right',
+            labelWidth: 250,
+            format: 'H:i'
         }, {
             fieldLabel: 'Domain Name',
             name: 'domain_name',
@@ -202,6 +242,9 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'opening_time').setValue( data.opening_time );
                 this.form.getForm().findField( 'closing_time').setValue( data.closing_time );
                 this.form.getForm().findField( 'open_all_day').setValue( data.open_all_day );
+                this.form.getForm().findField( 'lunch_break').setValue( data.lunch_break );
+                this.form.getForm().findField( 'lunch_break_start').setValue( data.lunch_break_start );
+                this.form.getForm().findField( 'lunch_break_end').setValue( data.lunch_break_end );
                 this.form.getForm().findField( 'domain_name').setValue( data.domain_name );
                 this.form.getForm().findField( 'domain_name_alias').setValue( data.domain_name_alias );
                 this.form.getForm().findField( 'default_collection_time').setValue( data.default_collection_time );
@@ -223,7 +266,9 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
 
     // Prepare opening and closing time.
     var opening_time_string = this.form.getForm().findField( 'opening_time').getRawValue(),
-        closing_time_string = this.form.getForm().findField( 'closing_time').getRawValue();
+        closing_time_string = this.form.getForm().findField( 'closing_time').getRawValue(),
+        lunch_break_end = this.form.getForm().findField( 'lunch_break_end').getRawValue(),
+        lunch_break_start = this.form.getForm().findField( 'lunch_break_start').getRawValue();
 
     // Create AJAX request object, and send form data.
     Ext.Ajax.request({
@@ -236,6 +281,9 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             opening_time: opening_time_string,
             closing_time: closing_time_string,
             open_all_day: this.form.getForm().findField( 'open_all_day').getValue() ? 1 : 0,
+            lunch_break_end: lunch_break_end,
+            lunch_break_start: lunch_break_start,
+            lunch_break: this.form.getForm().findField( 'lunch_break').getValue() ? 1 : 0,
             domain_name: this.form.getForm().findField( 'domain_name').getValue(),
             domain_name_alias: this.form.getForm().findField( 'domain_name_alias').getValue(),
             default_collection_time: this.form.getForm().findField( 'default_collection_time').getValue(),
