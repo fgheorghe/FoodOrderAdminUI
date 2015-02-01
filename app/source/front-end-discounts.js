@@ -128,7 +128,6 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = func
             labelAlign: 'right',
             tabIndex: 3,
             minValue: 1,
-            maxValue: 100,
             allowDecimals: true,
             step: 1,
             value: record ? record.value : ""
@@ -188,8 +187,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = funct
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 3,
-            minValue: 1,
-            maxValue: 100,
+            minValue: 1
             allowDecimals: false,
             step: 1,
             value: record ? record.value : ""
