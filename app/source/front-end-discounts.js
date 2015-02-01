@@ -442,8 +442,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                 })
         } ],
         columns: [
-            { header: 'Discount Name', dataIndex: 'discount_name', width: 200, renderer: Util.textColumnRenderer },
-            { header: 'Discount Type', dataIndex: 'discount_type', flex: 1, renderer: function(value) {
+            { header: 'Discount Type', dataIndex: 'discount_type', width: 300, renderer: function(value) {
                     switch (value) {
                         case 0:
                             return "Percent off on all items";
@@ -459,7 +458,8 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                             break;
                     }
                 }
-            }
+            },
+            { header: 'Discount Name', dataIndex: 'discount_name', flex: 1, renderer: Util.textColumnRenderer }
         ],
         tbar: {
             items: [ {
