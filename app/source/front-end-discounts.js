@@ -171,14 +171,14 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = func
                         if (!record) {
                             this.createOrUpdateDiscount(
                                 win,
-                                1,
+                                2,
                                 form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField( 'order_amount').getValue()
                             );
                         } else {
                             this.createOrUpdateDiscount(
                                 win,
-                                1,
+                                2,
                                 form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField( 'order_amount').getValue(),
                                 record.id
@@ -239,14 +239,14 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = funct
                         if (!record) {
                             this.createOrUpdateDiscount(
                                 win,
-                                2,
+                                1,
                                 form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField( 'order_amount').getValue()
                             );
                         } else {
                             this.createOrUpdateDiscount(
                                 win,
-                                2,
+                                1,
                                 form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField( 'order_amount').getValue(),
                                 record.id
