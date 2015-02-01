@@ -16,6 +16,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createStore = function() {
     this.store = Ext.create( 'Ext.data.JsonStore', {
         fields:[
             'id',
+            'discount_name',
             'discount_type',
             'value'
         ],
@@ -36,6 +37,12 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
         frame: false,
         border: false,
         items: [{
+            fieldLabel: 'Name',
+            allowBlank: false,
+            name: 'discount_name',
+            labelAlign: 'right',
+            value: record ? record.discount_name : ""
+        }, {
             fieldLabel: 'Discount %',
             name: 'discount_percent',
             xtype: 'numberfield',
@@ -54,7 +61,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
         title: 'Percent off on all items',
         modal: true
         ,bodyPadding: 5
-        ,height: 115
+        ,height: 150
         ,width: 350
         ,layout: 'fit'
         ,items: [form]
@@ -72,12 +79,14 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
                             this.createOrUpdateDiscount(
                                 win,
                                 0,
+                                form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField('discount_percent').getValue()
                             );
                         } else {
                             this.createOrUpdateDiscount(
                                 win,
                                 0,
+                                form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField('discount_percent').getValue(),
                                 record.id
                             );
@@ -91,7 +100,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
     win.show();
 }
 
-FOBO.ui.prototype.frontEndDiscounts.prototype.createOrUpdateDiscount = function(window, discount_type, value, id) {
+FOBO.ui.prototype.frontEndDiscounts.prototype.createOrUpdateDiscount = function(window, discount_type, discount_name, value, id) {
     var discountWindowLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
     discountWindowLoadMask.show();
 
@@ -100,6 +109,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createOrUpdateDiscount = function(
         method: "POST",
         params: {
             discount_type: discount_type
+            ,discount_name: discount_name
             ,value: value
         },
         success: function(response, opts) {
@@ -121,6 +131,12 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = func
         frame: false,
         border: false,
         items: [{
+            fieldLabel: 'Name',
+            name: 'discount_name',
+            allowBlank: false,
+            labelAlign: 'right',
+            value: record ? record.discount_name : ""
+        }, {
             fieldLabel: 'Order amount',
             name: 'order_amount',
             xtype: 'numberfield',
@@ -138,7 +154,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = func
         title: 'Free drink with order amount over',
         modal: true
         ,bodyPadding: 5
-        ,height: 115
+        ,height: 150
         ,width: 350
         ,layout: 'fit'
         ,items: [form]
@@ -156,12 +172,14 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = func
                             this.createOrUpdateDiscount(
                                 win,
                                 1,
+                                form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField( 'order_amount').getValue()
                             );
                         } else {
                             this.createOrUpdateDiscount(
                                 win,
                                 1,
+                                form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField( 'order_amount').getValue(),
                                 record.id
                             );
@@ -181,13 +199,19 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = funct
         frame: false,
         border: false,
         items: [{
+            fieldLabel: 'Name',
+            allowBlank: false,
+            labelAlign: 'right',
+            name: 'discount_name',
+            value: record ? record.discount_name : ""
+        }, {
             fieldLabel: 'Order amount',
             name: 'order_amount',
             xtype: 'numberfield',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 3,
-            minValue: 1
+            minValue: 1,
             allowDecimals: false,
             step: 1,
             value: record ? record.value : ""
@@ -198,7 +222,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = funct
         title: 'Free dish with order amount over',
         modal: true
         ,bodyPadding: 5
-        ,height: 115
+        ,height: 150
         ,width: 350
         ,layout: 'fit'
         ,items: [form]
@@ -216,12 +240,14 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = funct
                             this.createOrUpdateDiscount(
                                 win,
                                 2,
+                                form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField( 'order_amount').getValue()
                             );
                         } else {
                             this.createOrUpdateDiscount(
                                 win,
                                 2,
+                                form.getForm().findField('discount_name').getValue(),
                                 form.getForm().findField( 'order_amount').getValue(),
                                 record.id
                             );
@@ -416,6 +442,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                 })
         } ],
         columns: [
+            { header: 'Discount Name', dataIndex: 'discount_name', width: 200, renderer: Util.textColumnRenderer },
             { header: 'Discount Type', dataIndex: 'discount_type', flex: 1, renderer: function(value) {
                     switch (value) {
                         case 0:
