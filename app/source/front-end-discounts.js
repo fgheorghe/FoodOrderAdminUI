@@ -409,7 +409,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                                 return "All customers are given a " + values.value + "% discount on website orders.";
                                 break;
                             case 1:
-                                return "Customer gets a free " + values.discount_item_name + " on orders over " + values.value + " GBP";
+                                return "Customer gets a free " + values.discount_item_name + " on orders over " + values.value + " GBP.";
                                 break;
                             default:
                                 return "Unknown discount type";
