@@ -16,7 +16,8 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createStore = function() {
     this.store = Ext.create( 'Ext.data.JsonStore', {
         fields:[
             'id',
-            'type'
+            'discount_type',
+            'value'
         ],
         proxy:{
             type:'rest',
@@ -274,16 +275,57 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
         plugins: [ {
             ptype: 'rowexpander',
             rowBodyTpl : new Ext.XTemplate(
-                '<b>Settings:</b><br/>{settings:this.discountSettings}</p>',
+                '<b>Notes:</b> {discount_type:this.discountNotes}<br/><b>Settings:</b> {[this.discountSettings(values)]}',
                 {
-                    discountSettings: function(value){
-                        return value;
+                    discountNotes: function(value){
+                        switch (value) {
+                            case 0:
+                                return "This discount applies to all orders.";
+                                break;
+                            case 1:
+                            case 2:
+                                return "The customer can choose this type of discount.";
+                                break;
+                            default:
+                                return "Unknown discount type";
+                                break;
+                        }
+                    },
+                    discountSettings: function (values) {
+                        switch (values.discount_type) {
+                            case 0:
+                                return "All customers are given a " + values.value + "% discount on website orders.";
+                                break;
+                            case 1:
+                                return "Customer gets a free dish on orders over " + values.value + " GBP";
+                                break;
+                            case 2:
+                                return "Customer gets a free drink on orders over " + values.value + " GBP";
+                                break;
+                            default:
+                                return "Unknown discount type";
+                                break;
+                        }
                     }
                 })
         } ],
         columns: [
-            { header: 'Type', dataIndex: 'type', width: 180,
-                renderer: Util.textColumnRenderer
+            { header: 'Discount Type', dataIndex: 'discount_type', flex: 1, renderer: function(value) {
+                    switch (value) {
+                        case 0:
+                            return "Percent off on all items";
+                            break;
+                        case 1:
+                            return "Free dish with order amount over";
+                            break;
+                        case 2:
+                            return "Free drink with order amount over";
+                            break;
+                        default:
+                            return "Unknown discount type";
+                            break;
+                    }
+                }
             }
         ],
         tbar: {
@@ -302,13 +344,6 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                 this.editDiscountButton.setDisabled(false);
                 this.deleteDiscountButton.setDisabled(false);
             }.bind( this )
-        },
-        // paging bar on the bottom
-        bbar: Ext.create('Ext.PagingToolbar', {
-            //store: this.store,
-            displayInfo: true,
-            displayMsg: 'Displaying topics {0} - {1} of {2}',
-            emptyMsg: "No items to display"
-        } )
+        }
     } );
 }
