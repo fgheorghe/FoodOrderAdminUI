@@ -30,7 +30,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createStore = function() {
     } );
 }
 
-FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = function() {
+FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = function(record) {
     var form = Ext.create('Ext.form.Panel', {
         defaultType: 'textfield',
         frame: false,
@@ -45,7 +45,8 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
             minValue: 1,
             maxValue: 100,
             allowDecimals: true,
-            step: 1
+            step: 1,
+            value: record ? record.value : ""
         }]
     });
 
@@ -64,9 +65,24 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
                     win.close();
                 }.bind( this )
             }, {
-                text: 'Add',
+                text: record ? 'Update' : 'Add',
                 handler: function() {
-                    // TODO
+                    if ( form.getForm().isValid() ) {
+                        if (!record) {
+                            this.createOrUpdateDiscount(
+                                win,
+                                0,
+                                form.getForm().findField('discount_percent').getValue()
+                            );
+                        } else {
+                            this.createOrUpdateDiscount(
+                                win,
+                                0,
+                                form.getForm().findField('discount_percent').getValue(),
+                                record.id
+                            );
+                        }
+                    }
                 }.bind( this )
             }
         ]
@@ -75,7 +91,31 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
     win.show();
 }
 
-FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = function() {
+FOBO.ui.prototype.frontEndDiscounts.prototype.createOrUpdateDiscount = function(window, discount_type, value, id) {
+    var discountWindowLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
+    discountWindowLoadMask.show();
+
+    Ext.Ajax.request({
+        url: !id ? '/api/front-end-discounts/' : '/api/front-end-discounts/' + id,
+        method: "POST",
+        params: {
+            discount_type: discount_type
+            ,value: value
+        },
+        success: function(response, opts) {
+            this.refreshData();
+            discountWindowLoadMask.hide();
+            window.close();
+        }.bind( this ),
+        failure: function(response, opts) {
+            discountWindowLoadMask.hide();
+            // TODO: Implement.
+            console.log('server-side failure with status code ' + response.status);
+        }
+    });
+}
+
+FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = function(record) {
     var form = Ext.create('Ext.form.Panel', {
         defaultType: 'textfield',
         frame: false,
@@ -90,7 +130,8 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = func
             minValue: 1,
             maxValue: 100,
             allowDecimals: true,
-            step: 1
+            step: 1,
+            value: record ? record.value : ""
         }]
     });
 
@@ -109,9 +150,24 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = func
                     win.close();
                 }.bind( this )
             }, {
-                text: 'Add',
+                text: record ? "Update" : "Add",
                 handler: function() {
-                    // TODO
+                    if ( form.getForm().isValid() ) {
+                        if (!record) {
+                            this.createOrUpdateDiscount(
+                                win,
+                                1,
+                                form.getForm().findField( 'order_amount').getValue()
+                            );
+                        } else {
+                            this.createOrUpdateDiscount(
+                                win,
+                                1,
+                                form.getForm().findField( 'order_amount').getValue(),
+                                record.id
+                            );
+                        }
+                    }
                 }.bind( this )
             }
         ]
@@ -120,7 +176,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = func
     win.show();
 }
 
-FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = function() {
+FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = function(record) {
     var form = Ext.create('Ext.form.Panel', {
         defaultType: 'textfield',
         frame: false,
@@ -129,13 +185,14 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = funct
             fieldLabel: 'Order amount',
             name: 'order_amount',
             xtype: 'numberfield',
-            allowBlank: true,
+            allowBlank: false,
             labelAlign: 'right',
             tabIndex: 3,
             minValue: 1,
             maxValue: 100,
             allowDecimals: false,
-            step: 1
+            step: 1,
+            value: record ? record.value : ""
         }]
     });
 
@@ -154,9 +211,24 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = funct
                     win.close();
                 }.bind( this )
             }, {
-                text: 'Add',
+                text: record ? "Update" : 'Add',
                 handler: function() {
-                    // TODO
+                    if ( form.getForm().isValid() ) {
+                        if (!record) {
+                            this.createOrUpdateDiscount(
+                                win,
+                                2,
+                                form.getForm().findField( 'order_amount').getValue()
+                            );
+                        } else {
+                            this.createOrUpdateDiscount(
+                                win,
+                                2,
+                                form.getForm().findField( 'order_amount').getValue(),
+                                record.id
+                            );
+                        }
+                    }
                 }.bind( this )
             }
         ]
@@ -259,13 +331,49 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
     this.editDiscountButton = Ext.create( 'Ext.button.Button', {
         text: 'Edit Discount',
         type: 'button',
-        disabled: true
+        disabled: true,
+        handler: function() {
+            var selection = this.panel.getView().getSelectionModel().getSelection();
+
+            switch (selection[0].raw.discount_type) {
+                case 0:
+                    this.showPercentOffOnAllItemsWindow(selection[0].raw);
+                    break;
+                case 2:
+                    this.showFreeDrinkDiscountWindow(selection[0].raw);
+                    break;
+                case 1:
+                    this.showFreeDishDiscountWindow(selection[0].raw);
+                    break;
+                default:
+                    // Do nothing.
+                    break;
+            }
+        }.bind(this)
     } );
 
     this.deleteDiscountButton = Ext.create( 'Ext.button.Button', {
         text: 'Delete Discount',
         type: 'button',
-        disabled: true
+        disabled: true,
+        handler: function() {
+            var selection = this.panel.getView().getSelectionModel().getSelection();
+
+            // TODO: Clean-up.
+            Ext.Ajax.request({
+                url: '/api/front-end-discounts/' + selection[0].raw.id,
+                method: "DELETE",
+                success: function(response, opts) {
+                    this.refreshData();
+                }.bind( this ),
+                failure: function(response, opts) {
+                    // TODO: Implement.
+                    console.log('server-side failure with status code ' + response.status);
+                }
+            });
+
+            this.deleteDiscountButton.setDisabled( true );
+        }.bind(this)
     } );
 
     // Panel itself.
@@ -275,7 +383,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
         plugins: [ {
             ptype: 'rowexpander',
             rowBodyTpl : new Ext.XTemplate(
-                '<b>Notes:</b> {discount_type:this.discountNotes}<br/><b>Settings:</b> {[this.discountSettings(values)]}',
+                '<b>Description:</b> {discount_type:this.discountNotes}<br/><br/><b>Settings:</b> {[this.discountSettings(values)]}',
                 {
                     discountNotes: function(value){
                         switch (value) {
