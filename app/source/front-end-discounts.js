@@ -18,7 +18,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createStore = function() {
             'id',
             'discount_name',
             'discount_type',
-            'value'
+            'value',
+            'discount_item_id',
+            'discount_item_name'
         ],
         proxy:{
             type:'rest',
@@ -79,15 +81,19 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
                             this.createOrUpdateDiscount(
                                 win,
                                 0,
-                                form.getForm().findField('discount_name').getValue(),
-                                form.getForm().findField('discount_percent').getValue()
+                                {
+                                    discount_name: form.getForm().findField('discount_name').getValue(),
+                                    value: form.getForm().findField('discount_percent').getValue()
+                                }
                             );
                         } else {
                             this.createOrUpdateDiscount(
                                 win,
                                 0,
-                                form.getForm().findField('discount_name').getValue(),
-                                form.getForm().findField('discount_percent').getValue(),
+                                {
+                                    discount_name: form.getForm().findField('discount_name').getValue(),
+                                    value: form.getForm().findField('discount_percent').getValue()
+                                },
                                 record.id
                             );
                         }
@@ -100,18 +106,23 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
     win.show();
 }
 
-FOBO.ui.prototype.frontEndDiscounts.prototype.createOrUpdateDiscount = function(window, discount_type, discount_name, value, id) {
-    var discountWindowLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
+FOBO.ui.prototype.frontEndDiscounts.prototype.createOrUpdateDiscount = function(window, discount_type, properties, id) {
+    var discountWindowLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." }),
+        params = {
+            discount_type: discount_type
+            ,discount_name: properties.discount_name
+            ,value: properties.value
+        };
     discountWindowLoadMask.show();
+
+    if (discount_type === 1) {
+        params.discount_item_id = properties.discount_item_id;
+    }
 
     Ext.Ajax.request({
         url: !id ? '/api/front-end-discounts/' : '/api/front-end-discounts/' + id,
         method: "POST",
-        params: {
-            discount_type: discount_type
-            ,discount_name: discount_name
-            ,value: value
-        },
+        params: params,
         success: function(response, opts) {
             this.refreshData();
             discountWindowLoadMask.hide();
@@ -125,75 +136,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createOrUpdateDiscount = function(
     });
 }
 
-FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDrinkDiscountWindow = function(record) {
-    var form = Ext.create('Ext.form.Panel', {
-        defaultType: 'textfield',
-        frame: false,
-        border: false,
-        items: [{
-            fieldLabel: 'Name',
-            name: 'discount_name',
-            allowBlank: false,
-            labelAlign: 'right',
-            value: record ? record.discount_name : ""
-        }, {
-            fieldLabel: 'Order amount',
-            name: 'order_amount',
-            xtype: 'numberfield',
-            allowBlank: false,
-            labelAlign: 'right',
-            tabIndex: 3,
-            minValue: 1,
-            allowDecimals: true,
-            step: 1,
-            value: record ? record.value : ""
-        }]
-    });
-
-    var win = Ext.create('Ext.window.Window', {
-        title: 'Free drink with order amount over',
-        modal: true
-        ,bodyPadding: 5
-        ,height: 150
-        ,width: 350
-        ,layout: 'fit'
-        ,items: [form]
-        ,buttons: [
-            {
-                text: 'Cancel',
-                handler: function() {
-                    win.close();
-                }.bind( this )
-            }, {
-                text: record ? "Update" : "Add",
-                handler: function() {
-                    if ( form.getForm().isValid() ) {
-                        if (!record) {
-                            this.createOrUpdateDiscount(
-                                win,
-                                2,
-                                form.getForm().findField('discount_name').getValue(),
-                                form.getForm().findField( 'order_amount').getValue()
-                            );
-                        } else {
-                            this.createOrUpdateDiscount(
-                                win,
-                                2,
-                                form.getForm().findField('discount_name').getValue(),
-                                form.getForm().findField( 'order_amount').getValue(),
-                                record.id
-                            );
-                        }
-                    }
-                }.bind( this )
-            }
-        ]
-    });
-
-    win.show();
-}
-
-FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = function(record) {
+FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeItemDiscountWindow = function(record) {
     var form = Ext.create('Ext.form.Panel', {
         defaultType: 'textfield',
         frame: false,
@@ -215,17 +158,60 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = funct
             allowDecimals: false,
             step: 1,
             value: record ? record.value : ""
-        }]
+        }, Ext.create('Ext.form.ComboBox', {
+            fieldLabel: 'Menu Item',
+            labelAlign: 'right',
+            name: 'discount_item',
+            width: 400,
+            store: Ext.create( 'Ext.data.JsonStore', {
+                fields:[
+                    'id',
+                    'item_name'
+                ],
+                proxy:{
+                    type:'rest',
+                    url:'/api/menu-items/',
+                    reader:{
+                        type: 'json',
+                        root:'data'
+                    }
+                }
+            } ),
+            listConfig: {
+                loadingText: 'Loading...',
+                emptyText: 'No matching menu items found.',
+                getInnerTpl: function() {
+                    return '<div class="search-item">{[Util.textColumnRenderer(values.item_name)]}';
+                }
+            },
+            editable: false,
+            allowBlank: false,
+            displayField: 'item_name',
+            valueField: 'id'
+        })]
     });
 
     var win = Ext.create('Ext.window.Window', {
-        title: 'Free dish with order amount over',
+        title: 'Free item if order amount over',
         modal: true
         ,bodyPadding: 5
-        ,height: 150
-        ,width: 350
+        ,height: 177
+        ,width: 440
         ,layout: 'fit'
         ,items: [form]
+        ,listeners: {
+            // Populate selected discount item, on render, if any is set and doing an update.
+            render: function() {
+                if (record) {
+                    var discountWindowLoadMask = new Ext.LoadMask( win.getEl(), { msg: "Please wait..." });
+                    discountWindowLoadMask.show();
+                    form.getForm().findField('discount_item').getStore().load(function() {
+                        form.getForm().findField('discount_item').setValue(record.discount_item_id);
+                        discountWindowLoadMask.hide();
+                    });
+                }
+            }.bind(this)
+        }
         ,buttons: [
             {
                 text: 'Cancel',
@@ -240,15 +226,21 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showFreeDishDiscountWindow = funct
                             this.createOrUpdateDiscount(
                                 win,
                                 1,
-                                form.getForm().findField('discount_name').getValue(),
-                                form.getForm().findField( 'order_amount').getValue()
+                                {
+                                    discount_name: form.getForm().findField('discount_name').getValue(),
+                                    value: form.getForm().findField('order_amount').getValue(),
+                                    discount_item_id: form.getForm().findField('discount_item').getValue()
+                                }
                             );
                         } else {
                             this.createOrUpdateDiscount(
                                 win,
                                 1,
-                                form.getForm().findField('discount_name').getValue(),
-                                form.getForm().findField( 'order_amount').getValue(),
+                                {
+                                    discount_name: form.getForm().findField('discount_name').getValue(),
+                                    value: form.getForm().findField('order_amount').getValue(),
+                                    discount_item_id: form.getForm().findField('discount_item').getValue()
+                                },
                                 record.id
                             );
                         }
@@ -281,15 +273,10 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
                     inputValue: 0,
                     id: 'discount_type_0'
                 }, {
-                    boxLabel: 'Free dish with order amount over',
+                    boxLabel: 'Free item if order amount over',
                     name: 'discount_type',
                     inputValue: 1,
                     id: 'discount_type_1'
-                }, {
-                    boxLabel: 'Free drink with order amount over',
-                    name: 'discount_type',
-                    inputValue: 2,
-                    id: 'discount_type_2'
                 }
             ]
         }]
@@ -298,8 +285,8 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
     var win = Ext.create('Ext.window.Window', {
         title: 'Choose discount type',
         modal: true,
-        width: 250,
-        height: 200,
+        width: 300,
+        height: 160,
         layout: 'fit',
         items: [form],
         buttons: [
@@ -312,17 +299,13 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
                 text: 'Add',
                 handler: function() {
                     var discountType0 = Ext.getCmp('discount_type_0'),
-                        discountType1 = Ext.getCmp('discount_type_1'),
-                        discountType2 = Ext.getCmp('discount_type_2');
+                        discountType1 = Ext.getCmp('discount_type_1');
 
                     if (discountType0.getValue() === true) {
                         this.showPercentOffOnAllItemsWindow();
                         win.close();
                     } else if (discountType1.getValue() === true) {
-                        this.showFreeDishDiscountWindow();
-                        win.close();
-                    } else if (discountType2.getValue() === true) {
-                        this.showFreeDrinkDiscountWindow();
+                        this.showFreeItemDiscountWindow();
                         win.close();
                     }
                 }.bind( this )
@@ -363,11 +346,8 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                 case 0:
                     this.showPercentOffOnAllItemsWindow(selection[0].raw);
                     break;
-                case 2:
-                    this.showFreeDrinkDiscountWindow(selection[0].raw);
-                    break;
                 case 1:
-                    this.showFreeDishDiscountWindow(selection[0].raw);
+                    this.showFreeItemDiscountWindow(selection[0].raw);
                     break;
                 default:
                     // Do nothing.
@@ -429,10 +409,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                                 return "All customers are given a " + values.value + "% discount on website orders.";
                                 break;
                             case 1:
-                                return "Customer gets a free dish on orders over " + values.value + " GBP";
-                                break;
-                            case 2:
-                                return "Customer gets a free drink on orders over " + values.value + " GBP";
+                                return "Customer gets a free " + values.discount_item_name + " on orders over " + values.value + " GBP";
                                 break;
                             default:
                                 return "Unknown discount type";
@@ -448,10 +425,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                             return "Percent off on all items";
                             break;
                         case 1:
-                            return "Free dish with order amount over";
-                            break;
-                        case 2:
-                            return "Free drink with order amount over";
+                            return "Free item with order amount over";
                             break;
                         default:
                             return "Unknown discount type";
