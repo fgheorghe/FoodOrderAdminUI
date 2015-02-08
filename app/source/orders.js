@@ -531,13 +531,38 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 // First, commit changes to memory.
                 context.record.commit();
                 // Recalculate prices.
-                var price = 0, discount = this.discountField.getValue() ? this.discountField.getValue() : 0
-                    ,frontEndDiscountsTotal = this.frontEndDiscountsTotalField.getValue() ? this.frontEndDiscountsTotalField.getValue() : 0;
+                var price = 0, manualDiscount = this.discountField.getValue() ? this.discountField.getValue() : 0
+                    ,frontEndDiscountsTotal = 0
+                    ,i
+                    ,discount
+                    ,menuItems = {};
+
                 this.menuItemsGrid.getStore().each(function(record) {
                     price += record.data.price * record.data.count;
+                    if (record.data.count) {
+                        menuItems[record.data.id] = record.data;
+                    }
                 }, this);
+
+                // Calculate front end discounts.
+                if (order) {
+                    for (i = 0; i < order.front_end_discounts.length; i++) {
+                        discount = order.front_end_discounts[i];
+                        if (discount.discount_type === 0) {
+                            frontEndDiscountsTotal = frontEndDiscountsTotal + (price * discount.discount_value / 100);
+                        }
+
+                        if (discount.discount_type === 1
+                            && price > discount.discount_value
+                            && typeof menuItems[discount.discount_item_id] !== "undefined") {
+                            frontEndDiscountsTotal = frontEndDiscountsTotal + menuItems[discount.discount_item_id].price;
+                        }
+                    }
+                }
+
+                this.frontEndDiscountsTotalField.setValue(frontEndDiscountsTotal.toFixed( 2 ));
                 this.totalField.setValue( price.toFixed( 2 ) );
-                this.finalField.setValue( ( price - frontEndDiscountsTotal - price * discount / 100 ).toFixed( 2 ) );
+                this.finalField.setValue( (price - frontEndDiscountsTotal - price * manualDiscount / 100).toFixed( 2 ) );
             }.bind(this)
         }
     });
@@ -621,7 +646,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                     // Prepare Ajax request data
                     var orderItems = []
                         ,url = order ? '/api/order/' + order.id : '/api/order/'
-                        ,method = 'POST';
+                        ,method = 'POST'
+                        ,frontEndDiscounts = [];
 
                     this.menuItemsGrid.getStore().each(function(record) {
                         if (record.data.count) {
@@ -633,6 +659,10 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                         }
                     }, this);
 
+                    if (order) {
+                        frontEndDiscounts = order.front_end_discounts;
+                    }
+
                     this.orderLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
                     this.orderLoadMask.show();
                     Ext.Ajax.request({
@@ -640,6 +670,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                         method: method,
                         params: {
                             items: Ext.JSON.encode(orderItems)
+                            ,front_end_discounts: Ext.JSON.encode(frontEndDiscounts)
                             ,delivery_address: this.addressField.getValue()
                             ,post_code: this.postCodeField.getValue()
                             ,notes: this.notesField.getValue()
