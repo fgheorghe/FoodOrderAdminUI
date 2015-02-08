@@ -647,7 +647,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                     var orderItems = []
                         ,url = order ? '/api/order/' + order.id : '/api/order/'
                         ,method = 'POST'
-                        ,frontEndDiscounts = [];
+                        ,frontEndDiscounts = []
+                        ,i;
 
                     this.menuItemsGrid.getStore().each(function(record) {
                         if (record.data.count) {
@@ -660,7 +661,9 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                     }, this);
 
                     if (order) {
-                        frontEndDiscounts = order.front_end_discounts;
+                        for (i = 0; i < order.front_end_discounts.length; i++) {
+                            frontEndDiscounts.push(order.front_end_discounts[i].discount_id);
+                        }
                     }
 
                     this.orderLoadMask = new Ext.LoadMask( window.getEl(), { msg: "Please wait..." } );
