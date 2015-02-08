@@ -94,6 +94,51 @@ FOBO.ui.prototype.orders.prototype.createAddCustomerWindow = function( customerI
 }
 
 /**
+ * Method used for displaying selected front end order discounts window.
+ * @function
+ */
+FOBO.ui.prototype.orders.prototype.createFrontEndDiscountsWindow = function(order) {
+    var height = 83, win, discountLabelFields = [], i;
+
+    for (i = 0; i < order.front_end_discounts.length; i++) {
+        discountLabelFields.push(Ext.create('Ext.form.field.Text', {
+            fieldLabel: 'Name',
+            value: order.front_end_discounts[i].discount_name,
+            readOnly: true,
+            labelAlign: 'right',
+            labelWidth: 80,
+            width: 670
+        }));
+        height += 30;
+    }
+
+    win = Ext.create('Ext.window.Window', {
+        width: 700,
+        height: height,
+        modal: true,
+        bodyPadding: 5,
+        title: 'Selected Front End Discounts',
+        items: [
+            Ext.create('Ext.form.Panel', {
+                frame: false,
+                border: false,
+                items: discountLabelFields
+            })
+        ]
+        ,buttons: [
+            {
+                text: 'Close',
+                handler: function() {
+                    win.close();
+                }.bind( this )
+            }
+        ]
+    });
+
+    win.show();
+}
+
+/**
  * @function Creates and shows an order window.
  */
 FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
@@ -110,8 +155,12 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             this.customerTypeCombo.setValue( order.customer_type );
             this.paymentStatusCombo.setValue( order.payment_status );
             this.totalField.setValue( order.total_price ? order.total_price : 0 );
+            this.frontEndDiscountsTotalField.setValue( order.front_end_discounts_total );
+            if (order.front_end_discounts.length !== 0) {
+                this.viewFrontEndDiscountsButton.setDisabled( false );
+            }
             this.discountField.setValue( order.discount );
-            this.finalField.setValue( ( order.total_price - order.discount * order.total_price / 100 ).toFixed( 2 ) );
+            this.finalField.setValue( ( order.total_price - order.front_end_discounts_total - order.discount * order.total_price / 100 ).toFixed( 2 ) );
             // Set the combo value, only after data is loaded.
             this.customerNameField.getStore().load(function() {
                 // If a customer id is set, the the value using that id.
@@ -127,7 +176,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 this.addressField.setValue( order.delivery_address );
                 this.postCodeField.setValue( order.post_code );
             }.bind(this));
-            this.notesField.setValue( order.notes );
+            this.notesField.setValue( new String(order.notes) );
         }
     }
 
@@ -173,8 +222,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
 
     this.orderReferenceField = Ext.create( 'Ext.form.field.Text', {
         fieldLabel: 'Reference',
-        width: 250,
-        labelWidth: 120,
+        width: 400,
+        labelWidth: 180,
         labelAlign: 'right',
         xtype: 'textfield'
     } );
@@ -203,7 +252,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         labelAlign: 'right',
         editable: false,
         allowBlank: false,
-        labelWidth: 120,
+        wdith: 400,
+        labelWidth: 180,
         listeners: {
             change: function(combo, value ) {
                 if ( value === 0 || value === 3 ) {
@@ -252,10 +302,11 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         queryMode: 'local',
         displayField: 'delivery_type',
         valueField: 'id',
+        width: 400,
         labelAlign: 'right',
         editable: false,
         allowBlank: false,
-        labelWidth: 120
+        labelWidth: 180
     } );
 
     this.customerTypeCombo = Ext.create('Ext.form.ComboBox', {
@@ -268,7 +319,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         labelAlign: 'right',
         editable: false,
         allowBlank: false,
-        labelWidth: 120
+        width: 400,
+        labelWidth: 180
     } );
 
     this.paymentStatusCombo = Ext.create('Ext.form.ComboBox', {
@@ -281,23 +333,35 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         labelAlign: 'right',
         editable: false,
         allowBlank: false,
-        labelWidth: 120
+        labelWidth: 180,
+        width: 400
     } );
 
     this.totalField = Ext.create( 'Ext.form.field.Text', {
         fieldLabel: 'Total',
         labelAlign: 'right',
         value: 0,
-        width: 250,
-        labelWidth: 120,
+        width: 400,
+        labelWidth: 180,
         allowBlank: false,
+        readOnly: true
+    } );
+
+    this.frontEndDiscountsTotalField = Ext.create( 'Ext.form.field.Text', {
+        fieldLabel: 'Front End Discounts Total',
+        labelWidth: 180,
+        width: 400,
+        name: 'front_end_discounts_total',
+        allowBlank: true,
+        labelAlign: 'right',
+        value: 0,
         readOnly: true
     } );
 
     this.discountField = Ext.create( 'Ext.form.field.Number', {
         fieldLabel: 'Discount (%)',
-        labelWidth: 120,
-        width: 250,
+        labelWidth: 180,
+        width: 400,
         name: 'discount',
         allowBlank: true,
         labelAlign: 'right',
@@ -309,8 +373,9 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         step: 0.5,
         listeners: {
             change: function(field, value) {
-                var price = this.totalField.getValue() ? this.totalField.getValue() : 0;
-                this.finalField.setValue( ( price - price * value / 100 ).toFixed( 2 ) );
+                var price = this.totalField.getValue() ? this.totalField.getValue() : 0,
+                    frontEndDiscountsTotal = this.frontEndDiscountsTotalField.getValue() ? this.frontEndDiscountsTotalField.getValue() : 0;
+                this.finalField.setValue( ( price - frontEndDiscountsTotal - price * value / 100 ).toFixed( 2 ) );
             }.bind( this )
         }
     } );
@@ -319,8 +384,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         fieldLabel: 'Final',
         labelAlign: 'right',
         value: 0,
-        width: 250,
-        labelWidth: 120,
+        width: 400,
+        labelWidth: 180,
         allowBlank: false,
         readOnly: true
     } );
@@ -368,12 +433,19 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         }.bind( this )
     } );
 
+    this.viewFrontEndDiscountsButton = Ext.create( 'Ext.button.Button', {
+        xtype: 'button'
+        ,text: 'View Order Front End Discounts'
+        ,disabled: true
+        ,handler: function() { if (order) this.createFrontEndDiscountsWindow(order); }.bind(this)
+    } );
+
     this.customerNameField = Ext.create( 'Ext.form.ComboBox', {
         typeAhead: false,
         fieldLabel: 'Customer Name',
         width: 400,
         store: this.customerNameStore,
-        labelWidth: 120,
+        labelWidth: 180,
         labelAlign: 'right',
         displayField: 'name',
         valueField: 'id',
@@ -419,8 +491,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
 
     this.addressField = Ext.create( 'Ext.form.field.Text', {
         fieldLabel: 'Delivery Address',
-        width: 250,
-        labelWidth: 120,
+        width: 400,
+        labelWidth: 180,
         labelAlign: 'right',
         xtype: 'textfield',
         allowBlank: false
@@ -428,8 +500,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
 
     this.postCodeField = Ext.create( 'Ext.form.field.Text', {
         fieldLabel: 'Post Code',
-        width: 250,
-        labelWidth: 120,
+        width: 400,
+        labelWidth: 180,
         labelAlign: 'right',
         xtype: 'textfield',
         allowBlank: false
@@ -437,8 +509,8 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
 
     this.phoneNumberField = Ext.create( 'Ext.form.field.Text', {
         fieldLabel: 'Phone Number',
-        width: 250,
-        labelWidth: 120,
+        width: 400,
+        labelWidth: 180,
         labelAlign: 'right',
         xtype: 'textfield',
         allowBlank: false
@@ -448,7 +520,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         fieldLabel: 'Notes',
         labelAlign: 'right',
         width: 400,
-        labelWidth: 120
+        labelWidth: 180
     } );
 
     // Prepare row editing plugin for updating order item count.
@@ -459,12 +531,13 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
                 // First, commit changes to memory.
                 context.record.commit();
                 // Recalculate prices.
-                var price = 0, discount = this.discountField.getValue() ? this.discountField.getValue() : 0;
+                var price = 0, discount = this.discountField.getValue() ? this.discountField.getValue() : 0
+                    ,frontEndDiscountsTotal = this.frontEndDiscountsTotalField.getValue() ? this.frontEndDiscountsTotalField.getValue() : 0;
                 this.menuItemsGrid.getStore().each(function(record) {
                     price += record.data.price * record.data.count;
                 }, this);
                 this.totalField.setValue( price.toFixed( 2 ) );
-                this.finalField.setValue( ( price - price * discount / 100 ).toFixed( 2 ) );
+                this.finalField.setValue( ( price - frontEndDiscountsTotal - price * discount / 100 ).toFixed( 2 ) );
             }.bind(this)
         }
     });
@@ -602,6 +675,34 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
             ,this.customerTypeCombo
             ,this.paymentStatusCombo
             ,this.totalField
+            ,{
+                xtype: 'fieldset'
+                ,border: 0
+                ,frame: false
+                ,bodyPadding: 0
+                ,layout: 'column'
+                ,style: 'margin: 0px 0px 0px 0px !important'
+                ,bodyStyle: 'margin: 0px 0px 0px 0px !important'
+                ,margin: 0
+                ,items: [
+                    {
+                        width: 400
+                        ,border: 0
+                        ,frame: false
+                        ,items: [
+                        this.frontEndDiscountsTotalField
+                    ]
+                    }, {
+                        width: 300
+                        ,border: 0
+                        ,frame: false
+                        ,bodyStyle: 'padding-left: 5px;'
+                        ,items: [
+                            this.viewFrontEndDiscountsButton
+                        ]
+                    }
+                ]
+            }
             ,this.discountField
             ,this.finalField
             ,{
@@ -837,6 +938,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             'delivery_type',
             'delivery_time',
             'discount',
+            'front_end_discounts_total',
             'final_price'
         ],
         proxy:{
@@ -959,7 +1061,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
 
     this.customerNameSearchField = Ext.create( 'Ext.form.field.Text', {
         fieldLabel: 'Customer Name',
-        labelWidth: 100,
+        labelWidth: 180,
         labelAlign: 'right',
         xtype: 'textfield'
     } );
@@ -998,6 +1100,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
                 }
                 return 0;
             } },
+            { header: 'Front End Discount Total', dataIndex: 'front_end_discounts_total', width: 90 },
             { header: 'Discount (%)', dataIndex: 'discount', width: 90 },
             { header: 'Final Price', dataIndex: 'final_price', width: 90, renderer: function( value ) {
                 if (value) {

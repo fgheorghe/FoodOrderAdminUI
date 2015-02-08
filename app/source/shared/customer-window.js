@@ -80,6 +80,7 @@ FOBO.shared.customerWindow.prototype.createInputFields = function() {
     this.verifiedCustomer = Ext.create( 'Ext.form.field.Checkbox', {
         fieldLabel: 'Verified Customer'
         ,labelWidth: 120
+        ,labelAlign: 'right'
         ,inputValue: true,
         checked: this.customerId && this.customerData.verified === 1 ? true : false
     } );
