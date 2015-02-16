@@ -40,7 +40,7 @@ FOBO.ui.prototype.dashboard.prototype.init = function() {
                             margin: 5,
                             layout: 'fit',
                             flex: 1,
-                            items: [ this.chart3 ]
+                            items: [ this.monthlyVisitorsChart ]
                     } ),
                     Ext.create( 'Ext.panel.Panel', {
                             title: 'Monthly Orders',
@@ -140,10 +140,23 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
         data: generateData(3)
     });
 
-    var store3 = new Ext.data.JsonStore({
+    this.monthlyVisitorsStore = Ext.create( 'Ext.data.JsonStore', {
+        fields: ['name', 'data'],
+        autoLoad: true,
+        proxy:{
+            type:'rest',
+            url:'/api/monthly-visitors/',
+            reader:{
+                type: 'json',
+                root:'data'
+            }
+        }
+    } );
+
+    /** new Ext.data.JsonStore({
         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data9', 'data9'],
         data: generateData(false, Ext.Date.monthNames)
-    });
+    }); */
 
     var store4 = new Ext.data.JsonStore({
         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data9', 'data9'],
@@ -220,32 +233,30 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
         }]
     });
 
-    this.chart3 = new Ext.chart.Chart({
+    this.monthlyVisitorsChart = new Ext.chart.Chart({
         animate: true,
-        store: store3,
+        store: this.monthlyVisitorsStore,
         shadow: true,
         axes: [{
             type: 'Numeric',
             position: 'left',
-            fields: ['data1'],
+            fields: ['data'],
             label: {
                 renderer: Ext.util.Format.numberRenderer('0,0')
             },
-            title: 'Number of Hits',
             grid: true,
             minimum: 0
         }, {
             type: 'Category',
             position: 'bottom',
-            fields: ['name'],
-            title: 'Month of the Year'
+            fields: ['name']
         }],
         series: [{
             type: 'column',
             axis: 'bottom',
             highlight: true,
             xField: 'name',
-            yField: 'data1'
+            yField: 'data'
         }]
     });
 
@@ -260,14 +271,12 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
             label: {
                 renderer: Ext.util.Format.numberRenderer('0,0')
             },
-            title: 'Number of Hits',
             grid: true,
             minimum: 0
         }, {
             type: 'Category',
             position: 'bottom',
-            fields: ['name'],
-            title: 'Month of the Year'
+            fields: ['name']
         }],
         series: [{
             type: 'column',
