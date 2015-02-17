@@ -74,7 +74,7 @@ FOBO.ui.prototype.dashboard.prototype.init = function() {
                             margin: 5,
                             layout: 'fit',
                             flex: 1,
-                            items: [ this.chart2 ]
+                            items: [ this.topMonthlyPostCodesChart ]
                     } )
                 ]
             } )
@@ -85,60 +85,18 @@ FOBO.ui.prototype.dashboard.prototype.init = function() {
 
 // Test charts.
 FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
-    var food = [];
-    for ( var i = 0; i <= 12; i++ ) {
-        food.push( "Food Type" + i );
-    }
-    function generateData(n, months){
-        var data = [],
-            p = (Math.random() *  11) + 1,
-            i;
-        for (i = 0; i < (n || 12); i++) {
-            data.push({
-                name: months ? months[i] : food[i],
-                data1: Math.floor(Math.max((Math.random() * 100), 20)),
-                data2: Math.floor(Math.max((Math.random() * 100), 20)),
-                data3: Math.floor(Math.max((Math.random() * 100), 20)),
-                data4: Math.floor(Math.max((Math.random() * 100), 20)),
-                data5: Math.floor(Math.max((Math.random() * 100), 20)),
-                data6: Math.floor(Math.max((Math.random() * 100), 20)),
-                data7: Math.floor(Math.max((Math.random() * 100), 20)),
-                data8: Math.floor(Math.max((Math.random() * 100), 20)),
-                data9: Math.floor(Math.max((Math.random() * 100), 20))
-            });
+    this.topMonthlyPostCodesChartStore = Ext.create( 'Ext.data.JsonStore', {
+        fields: ['name', 'data'],
+        autoLoad: true,
+        proxy:{
+            type:'rest',
+            url:'/api/monthly-post-codes/',
+            reader:{
+                type: 'json',
+                root:'data'
+            }
         }
-        return data;
-    }
-    function generateDataNegative(n){
-        var data = [],
-            p = (Math.random() *  11) + 1,
-            i;
-        for (i = 0; i < (n || 12); i++) {
-            data.push({
-                name: months ? months[i] : food[i],
-                data1: Math.floor(((Math.random() - 0.5) * 100)),
-                data2: Math.floor(((Math.random() - 0.5) * 100)),
-                data3: Math.floor(((Math.random() - 0.5) * 100)),
-                data4: Math.floor(((Math.random() - 0.5) * 100)),
-                data5: Math.floor(((Math.random() - 0.5) * 100)),
-                data6: Math.floor(((Math.random() - 0.5) * 100)),
-                data7: Math.floor(((Math.random() - 0.5) * 100)),
-                data8: Math.floor(((Math.random() - 0.5) * 100)),
-                data9: Math.floor(((Math.random() - 0.5) * 100))
-            });
-        }
-        return data;
-    }
-
-    var store2 = new Ext.data.JsonStore({
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data9', 'data9'],
-        data: generateData(3, [ 'OX3', 'NW4', 'EX1' ] )
-    });
-
-    /**var store1 = new Ext.data.JsonStore({
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data9', 'data9'],
-        data: generateData(3)
-    });*/
+    } );
 
     this.topMonthlySellingProductsStore = Ext.create( 'Ext.data.JsonStore', {
         fields: ['name', 'data'],
@@ -205,15 +163,14 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
         }]
     });
 
-    this.chart2 = new Ext.chart.Chart({
+    this.topMonthlyPostCodesChart = new Ext.chart.Chart({
         animate: true,
-        store: store2,
+        store: this.topMonthlyPostCodesChartStore,
         shadow: true,
         series: [{
             type: 'pie',
             animate: true,
-            angleField: 'data1', //bind angle span to visits
-            lengthField: 'data2', //bind pie slice length to views
+            angleField: 'data', //bind angle span to visits
             highlight: {
                 segment: {
                     margin: 20
@@ -228,14 +185,6 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
             style: {
                 'stroke-width': 1,
                 'stroke': '#fff'
-            },
-            //add renderer
-            renderer: function(sprite, record, attr, index, store) {
-                var value = (record.get('data1') >> 0) % 9;
-                var color = [ "#94ae0a", "#115fa6","#a61120", "#ff8809", "#ffd13e", "#a61187", "#24ad9a", "#7c7474", "#a66111"][value];
-                return Ext.apply(attr, {
-                    fill: color
-                });
             }
         }]
     });
