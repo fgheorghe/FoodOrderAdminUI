@@ -67,7 +67,7 @@ FOBO.ui.prototype.dashboard.prototype.init = function() {
                             margin: 5,
                             layout: 'fit',
                             flex: 1,
-                            items: [ this.chart ]
+                            items: [ this.topMonthlySellingProductsChart ]
                     } ),
                     Ext.create( 'Ext.panel.Panel', {
                             title: 'Top 3 Post Codes - Monthly',
@@ -135,10 +135,23 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
         data: generateData(3, [ 'OX3', 'NW4', 'EX1' ] )
     });
 
-    var store1 = new Ext.data.JsonStore({
+    /**var store1 = new Ext.data.JsonStore({
         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data9', 'data9'],
         data: generateData(3)
-    });
+    });*/
+
+    this.topMonthlySellingProductsStore = Ext.create( 'Ext.data.JsonStore', {
+        fields: ['name', 'data'],
+        autoLoad: true,
+        proxy:{
+            type:'rest',
+            url:'/api/monthly-selling-products/',
+            reader:{
+                type: 'json',
+                root:'data'
+            }
+        }
+    } );
 
     this.monthlyVisitorsStore = Ext.create( 'Ext.data.JsonStore', {
         fields: ['name', 'data'],
@@ -166,15 +179,14 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
         }
     });
 
-    this.chart = new Ext.chart.Chart({
+    this.topMonthlySellingProductsChart = new Ext.chart.Chart({
         animate: true,
-        store: store1,
+        store: this.topMonthlySellingProductsStore,
         shadow: true,
         series: [{
             type: 'pie',
             animate: true,
-            angleField: 'data1', //bind angle span to visits
-            lengthField: 'data2', //bind pie slice length to views
+            angleField: 'data', //bind angle span to visits
             highlight: {
                 segment: {
                     margin: 20
@@ -189,14 +201,6 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
             style: {
                 'stroke-width': 1,
                 'stroke': '#fff'
-            },
-            //add renderer
-            renderer: function(sprite, record, attr, index, store) {
-                var value = (record.get('data1') >> 0) % 9;
-                var color = [ "#94ae0a", "#115fa6","#a61120", "#ff8809", "#ffd13e", "#a61187", "#24ad9a", "#7c7474", "#a66111"][value];
-                return Ext.apply(attr, {
-                    fill: color
-                });
             }
         }]
     });
