@@ -82,8 +82,18 @@ FOBO.ui.prototype.dashboard.prototype.init = function() {
     } );
 }
 
+/**
+ * @function Reloads the main grid panel data.
+ */
+FOBO.ui.prototype.dashboard.prototype.refreshData = function() {
+    // Reload data.
+    this.topMonthlySellingProductsChart.getStore().load();
+    this.topMonthlyPostCodesChart.getStore().load();
+    this.monthlyVisitorsChart.getStore().load();
+    this.monthlyOrderValueChart.getStore().load();
+}
 
-// Test charts.
+// Charts.
 FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
     this.topMonthlyPostCodesChartStore = Ext.create( 'Ext.data.JsonStore', {
         fields: ['name', 'data'],
