@@ -43,11 +43,11 @@ FOBO.ui.prototype.dashboard.prototype.init = function() {
                             items: [ this.monthlyVisitorsChart ]
                     } ),
                     Ext.create( 'Ext.panel.Panel', {
-                            title: 'Monthly Orders',
+                            title: 'Monthly Order Value',
                             margin: 5,
                             layout: 'fit',
                             flex: 1,
-                            items: [ this.chart4 ]
+                            items: [ this.monthlyOrderValueChart ]
                     } )
                 ]
             } ),
@@ -153,14 +153,17 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
         }
     } );
 
-    /** new Ext.data.JsonStore({
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data9', 'data9'],
-        data: generateData(false, Ext.Date.monthNames)
-    }); */
-
-    var store4 = new Ext.data.JsonStore({
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data9', 'data9'],
-        data: generateData(false, Ext.Date.monthNames)
+    this.monthlyOrderValueStore = new Ext.data.JsonStore({
+        fields: ['name', 'data'],
+        autoLoad: true,
+        proxy:{
+            type:'rest',
+            url:'/api/monthly-order-values/',
+            reader:{
+                type: 'json',
+                root:'data'
+            }
+        }
     });
 
     this.chart = new Ext.chart.Chart({
@@ -260,14 +263,14 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
         }]
     });
 
-    this.chart4 = new Ext.chart.Chart({
+    this.monthlyOrderValueChart = new Ext.chart.Chart({
         animate: true,
-        store: store4,
+        store: this.monthlyOrderValueStore,
         shadow: true,
         axes: [{
             type: 'Numeric',
             position: 'left',
-            fields: ['data1'],
+            fields: ['data'],
             label: {
                 renderer: Ext.util.Format.numberRenderer('0,0')
             },
@@ -283,7 +286,7 @@ FOBO.ui.prototype.dashboard.prototype.createCharts = function() {
             axis: 'bottom',
             highlight: true,
             xField: 'name',
-            yField: 'data1'
+            yField: 'data'
         }]
     });
 }
