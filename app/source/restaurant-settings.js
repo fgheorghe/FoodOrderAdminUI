@@ -86,6 +86,12 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             name: "disable_online_payments"
         }, {
             xtype: 'checkboxfield',
+            fieldLabel: 'Allow Payment on Delivery or Collection for Unverified Users',
+            labelAlign: 'right',
+            labelWidth: 250,
+            name: "allow_unverified_pod_or_col_payment"
+        }, {
+            xtype: 'checkboxfield',
             fieldLabel: 'Open All Day',
             labelAlign: 'right',
             labelWidth: 250,
@@ -259,6 +265,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'order_confirmation_from').setValue( data.order_confirmation_from );
                 this.form.getForm().findField( 'minimum_website_order_value').setValue( data.minimum_website_order_value );
                 this.form.getForm().findField( 'site_contact_recipient_email').setValue( data.site_contact_recipient_email );
+                this.form.getForm().findField( 'allow_unverified_pod_or_col_payment').setValue( data.allow_unverified_pod_or_col_payment );
             }
 
             // Hide the load mask.
@@ -285,7 +292,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             restaurant_name: this.form.getForm().findField( 'restaurant_name').getValue(),
             restaurant_post_code: this.form.getForm().findField( 'restaurant_post_code').getValue(),
             delivery_range: this.form.getForm().findField( 'delivery_range').getValue(),
-            disable_online_payments: this.form.getForm().findField( 'disable_online_payments').getValue(),
+            disable_online_payments: this.form.getForm().findField( 'disable_online_payments').getValue() ? 1 : 0,
             opening_time: opening_time_string,
             closing_time: closing_time_string,
             open_all_day: this.form.getForm().findField( 'open_all_day').getValue() ? 1 : 0,
@@ -298,7 +305,8 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             default_delivery_time: this.form.getForm().findField( 'default_delivery_time').getValue(),
             order_confirmation_from: this.form.getForm().findField( 'order_confirmation_from').getValue(),
             minimum_website_order_value: this.form.getForm().findField( 'minimum_website_order_value').getValue(),
-            site_contact_recipient_email: this.form.getForm().findField( 'site_contact_recipient_email').getValue()
+            site_contact_recipient_email: this.form.getForm().findField( 'site_contact_recipient_email').getValue(),
+            allow_unverified_pod_or_col_payment: this.form.getForm().findField( 'allow_unverified_pod_or_col_payment').getValue() ? 1 : 0
         },
         success: function(){
             this.loadMask.hide();
