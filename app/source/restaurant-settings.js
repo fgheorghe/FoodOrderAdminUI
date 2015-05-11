@@ -80,6 +80,12 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             step: 0.4
         }, {
             xtype: 'checkboxfield',
+            fieldLabel: 'Disable Online Payments',
+            labelAlign: 'right',
+            labelWidth: 250,
+            name: "disable_online_payments"
+        }, {
+            xtype: 'checkboxfield',
             fieldLabel: 'Open All Day',
             labelAlign: 'right',
             labelWidth: 250,
@@ -239,6 +245,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'restaurant_name').setValue( data.restaurant_name );
                 this.form.getForm().findField( 'restaurant_post_code').setValue( data.restaurant_post_code );
                 this.form.getForm().findField( 'delivery_range').setValue( data.delivery_range );
+                this.form.getForm().findField( 'disable_online_payments').setValue( data.disable_online_payments );
                 this.form.getForm().findField( 'opening_time').setValue( data.opening_time );
                 this.form.getForm().findField( 'closing_time').setValue( data.closing_time );
                 this.form.getForm().findField( 'open_all_day').setValue( data.open_all_day );
@@ -278,6 +285,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             restaurant_name: this.form.getForm().findField( 'restaurant_name').getValue(),
             restaurant_post_code: this.form.getForm().findField( 'restaurant_post_code').getValue(),
             delivery_range: this.form.getForm().findField( 'delivery_range').getValue(),
+            disable_online_payments: this.form.getForm().findField( 'disable_online_payments').getValue(),
             opening_time: opening_time_string,
             closing_time: closing_time_string,
             open_all_day: this.form.getForm().findField( 'open_all_day').getValue() ? 1 : 0,
