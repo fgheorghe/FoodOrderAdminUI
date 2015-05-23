@@ -184,9 +184,9 @@ FOBO.ui.prototype.customerDatabase.prototype.init = function() {
         },
         // paging bar on the bottom
         bbar: Ext.create('Ext.PagingToolbar', {
-            //store: this.store,
+            store: this.store,
             displayInfo: true,
-            displayMsg: 'Displaying topics {0} - {1} of {2}',
+            displayMsg: 'Displaying customers {0} - {1} of {2}',
             emptyMsg: "No items to display"
         } )
     } );

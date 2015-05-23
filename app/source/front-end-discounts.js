@@ -277,6 +277,11 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
                     name: 'discount_type',
                     inputValue: 1,
                     id: 'discount_type_1'
+                }, {
+                    boxLabel: '% off on one category item if order amount over',
+                    name: 'discount_type',
+                    inputValue: 2,
+                    id: 'discount_type_2'
                 }
             ]
         }]
@@ -285,8 +290,8 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
     var win = Ext.create('Ext.window.Window', {
         title: 'Choose discount type',
         modal: true,
-        width: 300,
-        height: 160,
+        width: 350,
+        height: 180,
         layout: 'fit',
         items: [form],
         buttons: [

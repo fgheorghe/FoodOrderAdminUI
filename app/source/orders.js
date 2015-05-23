@@ -23,7 +23,7 @@ FOBO.ui.prototype.orders.prototype.createOrderWindowStore = function(order) {
             // If no order is set put an id of 0, to have default counts included. If an order is set, pass in the
             // the order id to get counts.
             url:'/api/menu-items/?order_id=' + (order ? order.id : 0),
-            reader:{
+            reader: {
                 type: 'json',
                 root:'data'
             }
@@ -621,7 +621,7 @@ FOBO.ui.prototype.orders.prototype.createNewOrderWindow = function( order ) {
         bbar: Ext.create('Ext.PagingToolbar', {
             store: this.orderWindowStore,
             displayInfo: true,
-            displayMsg: 'Displaying topics {0} - {1} of {2}',
+            displayMsg: 'Displaying food menu items {0} - {1} of {2}',
             emptyMsg: "No items to display"
         } )
     });
@@ -1227,7 +1227,7 @@ FOBO.ui.prototype.orders.prototype.init = function() {
         bbar: Ext.create('Ext.PagingToolbar', {
             store: this.store,
             displayInfo: true,
-            displayMsg: 'Displaying topics {0} - {1} of {2}',
+            displayMsg: 'Displaying orders {0} - {1} of {2}',
             emptyMsg: "No items to display"
         } )
     });

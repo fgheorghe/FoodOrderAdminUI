@@ -345,7 +345,7 @@ FOBO.ui.prototype.foodMenu.prototype.createPanel = function() {
         bbar: Ext.create('Ext.PagingToolbar', {
             store: this.store,
             displayInfo: true,
-            displayMsg: 'Displaying topics {0} - {1} of {2}',
+            displayMsg: 'Displaying food menu items {0} - {1} of {2}',
             emptyMsg: "No items to display"
         } ),
         listeners: {
