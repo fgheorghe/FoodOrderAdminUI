@@ -55,6 +55,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showBundleDiscountWindow = functio
                 value: record ? record.value : ""
             }]
         }),
+        // Upon rendering, ids found here will results in checked rows (if doing an edit).
+        selectedCategories = [],
+        selectedCategoryIds = {},
         categoryStore = Ext.create('Ext.data.Store', {
             fields: [ 'id', 'category_name' ],
             data : Common.FoodMenu.MenuItemCategories
@@ -69,8 +72,36 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showBundleDiscountWindow = functio
             ],
             columnLines: true,
             frame: false,
-            title: 'Menu Categories'
+            title: 'Menu Categories',
+            listeners: {
+                afterrender: function() {
+                    var selectionModel = categoryGridPanel.getSelectionModel();
+                    // Select all configured categories items.
+                    categoryGridPanel.getStore().each(function(record) {
+                        if (typeof selectedCategoryIds[record.data.id] !== "undefined") {
+                            selectionModel.select(record, true);
+                        }
+                    }, this);
+                }
+            }
         });
+
+    // Prepare selected categories -> if editing and if any.
+    if (record) {
+        try {
+            selectedCategories = Ext.JSON.decode(record.discount_category_items);
+        } catch (Ex) {
+            // Do nothing.
+        }
+        // If it can't be decoded, then set to an empty array.
+        if (selectedCategories === null) {
+            selectedCategories = [];
+        }
+        // Now extract ids.
+        _.each(selectedCategories, function(element) {
+            selectedCategoryIds[element.id] = true;
+        });
+    }
 
     var win = Ext.create('Ext.window.Window', {
         title: 'Bundle of dishes: 1 item of each selected category for a fixed total',
