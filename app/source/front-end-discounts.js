@@ -376,6 +376,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                 case 1:
                     this.showFreeItemDiscountWindow(selection[0].raw);
                     break;
+                case 3:
+                    this.showPercentOffOnAllItemsWindow(selection[0].raw, true);
+                    break;
                 default:
                     // Do nothing.
                     break;
