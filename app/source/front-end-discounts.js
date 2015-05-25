@@ -33,7 +33,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createStore = function() {
     } );
 }
 
-FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = function(record) {
+FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = function(record, optional) {
     var form = Ext.create('Ext.form.Panel', {
         defaultType: 'textfield',
         frame: false,
@@ -60,7 +60,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
     });
 
     var win = Ext.create('Ext.window.Window', {
-        title: 'Percent off on all items',
+        title: optional && optional === true ? 'Optional percent off on all items' : 'Percent off on all items',
         modal: true
         ,bodyPadding: 5
         ,height: 150
@@ -273,6 +273,11 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
                     inputValue: 0,
                     id: 'discount_type_0'
                 }, {
+                    boxLabel: 'Optional percent off on all items',
+                    name: 'discount_type',
+                    inputValue: 3,
+                    id: 'discount_type_3'
+                }, {
                     boxLabel: 'Free item if order amount over',
                     name: 'discount_type',
                     inputValue: 1,
@@ -282,6 +287,11 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
                     name: 'discount_type',
                     inputValue: 2,
                     id: 'discount_type_2'
+                }, {
+                    boxLabel: 'Bundle of dishes',
+                    name: 'discount_type',
+                    inputValue: 4,
+                    id: 'discount_type_4'
                 }
             ]
         }]
@@ -291,7 +301,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
         title: 'Choose discount type',
         modal: true,
         width: 350,
-        height: 180,
+        height: 240,
         layout: 'fit',
         items: [form],
         buttons: [
@@ -304,12 +314,24 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
                 text: 'Add',
                 handler: function() {
                     var discountType0 = Ext.getCmp('discount_type_0'),
-                        discountType1 = Ext.getCmp('discount_type_1');
+                        discountType1 = Ext.getCmp('discount_type_1'),
+                        discountType2 = Ext.getCmp('discount_type_2'),
+                        discountType3 = Ext.getCmp('discount_type_3'),
+                        discountType4 = Ext.getCmp('discount_type_4');
 
                     if (discountType0.getValue() === true) {
                         this.showPercentOffOnAllItemsWindow();
                         win.close();
                     } else if (discountType1.getValue() === true) {
+                        this.showFreeItemDiscountWindow();
+                        win.close();
+                    } else if (discountType2.getValue() === true) {
+                        this.showFreeItemDiscountWindow();
+                        win.close();
+                    } else if (discountType3.getValue() === true) {
+                        this.showPercentOffOnAllItemsWindow(null, true);
+                        win.close();
+                    } else if (discountType4.getValue() === true) {
                         this.showFreeItemDiscountWindow();
                         win.close();
                     }
