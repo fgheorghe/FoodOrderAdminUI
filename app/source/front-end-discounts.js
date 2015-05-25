@@ -80,7 +80,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
                         if (!record) {
                             this.createOrUpdateDiscount(
                                 win,
-                                0,
+                                optional && optional === true ? 3 : 0,
                                 {
                                     discount_name: form.getForm().findField('discount_name').getValue(),
                                     value: form.getForm().findField('discount_percent').getValue()
@@ -89,7 +89,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
                         } else {
                             this.createOrUpdateDiscount(
                                 win,
-                                0,
+                                optional && optional === true ? 3 : 0,
                                 {
                                     discount_name: form.getForm().findField('discount_name').getValue(),
                                     value: form.getForm().findField('discount_percent').getValue()
@@ -425,6 +425,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                             case 2:
                                 return "The customer can choose this type of discount.";
                                 break;
+                            case 3:
+                                return "The customer can choose this type of discount.";
+                                break;
                             default:
                                 return "Unknown discount type";
                                 break;
@@ -434,6 +437,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                         switch (values.discount_type) {
                             case 0:
                                 return "All customers are given a " + values.value + "% discount on website orders.";
+                                break;
+                            case 3:
+                                return "Customers are given a " + values.value + "% discount on website orders.";
                                 break;
                             case 1:
                                 return "Customer gets a free " + values.discount_item_name + " on orders over " + values.value + " GBP.";
@@ -449,13 +455,16 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
             { header: 'Discount Type', dataIndex: 'discount_type', width: 300, renderer: function(value) {
                     switch (value) {
                         case 0:
-                            return "Percent off on all items";
+                            return "Percent off on all items.";
+                            break;
+                        case 3:
+                            return "Optional percent off on all items.";
                             break;
                         case 1:
-                            return "Free item with order amount over";
+                            return "Free item with order amount over.";
                             break;
                         default:
-                            return "Unknown discount type";
+                            return "Unknown discount type.";
                             break;
                     }
                 }
