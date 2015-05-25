@@ -35,32 +35,50 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createStore = function() {
 
 FOBO.ui.prototype.frontEndDiscounts.prototype.showBundleDiscountWindow = function(record) {
     var form = Ext.create('Ext.form.Panel', {
-        defaultType: 'textfield',
-        frame: false,
-        border: false,
-        items: [{
-            fieldLabel: 'Name',
-            allowBlank: false,
-            name: 'discount_name',
-            labelAlign: 'right',
-            value: record ? record.discount_name : ""
-        },{
-            fieldLabel: 'Total Price',
-            allowBlank: false,
-            name: 'order_amount',
-            labelAlign: 'right',
-            value: record ? record.value : ""
-        }]
-    });
+            defaultType: 'textfield',
+            frame: false,
+            border: false,
+            region: 'north',
+            bodyPadding: 5,
+            height: 65,
+            items: [{
+                fieldLabel: 'Name',
+                allowBlank: false,
+                name: 'discount_name',
+                labelAlign: 'right',
+                value: record ? record.discount_name : ""
+            },{
+                fieldLabel: 'Total Price',
+                allowBlank: false,
+                name: 'order_amount',
+                labelAlign: 'right',
+                value: record ? record.value : ""
+            }]
+        }),
+        categoryStore = Ext.create('Ext.data.Store', {
+            fields: [ 'id', 'category_name' ],
+            data : Common.FoodMenu.MenuItemCategories
+        }),
+        sm = Ext.create('Ext.selection.CheckboxModel'),
+        categoryGridPanel = Ext.create('Ext.grid.Panel', {
+            store: categoryStore,
+            selModel: sm,
+            region: 'center',
+            columns: [
+                {text: "Category", flex: 1, dataIndex: 'category_name'}
+            ],
+            columnLines: true,
+            frame: false,
+            title: 'Menu Categories'
+        });
 
     var win = Ext.create('Ext.window.Window', {
         title: 'Bundle of dishes: 1 item of each selected category for a fixed total',
         modal: true
-        ,bodyPadding: 5
-        ,height: 150
+        ,height: 400
         ,width: 490
-        ,layout: 'fit'
-        ,items: [form]
+        ,layout: 'border'
+        ,items: [form, categoryGridPanel]
         ,buttons: [
             {
                 text: 'Cancel',
