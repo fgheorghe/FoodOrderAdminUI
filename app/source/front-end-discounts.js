@@ -288,7 +288,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
                     inputValue: 2,
                     id: 'discount_type_2'
                 }, {
-                    boxLabel: 'Bundle of dishes',
+                    boxLabel: 'Bundle of dishes: 1 item of each selected category for a fixed total',
                     name: 'discount_type',
                     inputValue: 4,
                     id: 'discount_type_4'
@@ -300,7 +300,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
     var win = Ext.create('Ext.window.Window', {
         title: 'Choose discount type',
         modal: true,
-        width: 350,
+        width: 440,
         height: 240,
         layout: 'fit',
         items: [form],
