@@ -88,14 +88,25 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showBundleDiscountWindow = functio
             }, {
                 text: record ? 'Update' : 'Add',
                 handler: function() {
-                    if ( form.getForm().isValid() ) {
+                    var selectedCategories = [],
+                        i,
+                        selection = categoryGridPanel.getView().getSelectionModel().getSelection();
+                    for (i = 0; i < selection.length; i++) {
+                        selectedCategories.push({
+                            id: selection[i].raw.id,
+                            category_name: selection[i].raw.category_name
+                        });
+                    }
+
+                    if (form.getForm().isValid()) {
                         if (!record) {
                             this.createOrUpdateDiscount(
                                 win,
                                 4,
                                 {
                                     discount_name: form.getForm().findField('discount_name').getValue(),
-                                    value: form.getForm().findField('order_amount').getValue()
+                                    value: form.getForm().findField('order_amount').getValue(),
+                                    discount_category_items: selectedCategories
                                 }
                             );
                         } else {
@@ -104,7 +115,8 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showBundleDiscountWindow = functio
                                 4,
                                 {
                                     discount_name: form.getForm().findField('discount_name').getValue(),
-                                    value: form.getForm().findField('order_amount').getValue()
+                                    value: form.getForm().findField('order_amount').getValue(),
+                                    discount_category_items: selectedCategories
                                 },
                                 record.id
                             );
@@ -202,6 +214,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createOrUpdateDiscount = function(
 
     if (discount_type === 1) {
         params.discount_item_id = properties.discount_item_id;
+    }
+    if (discount_type === 4) {
+        params.discount_category_items = Ext.JSON.encode(properties.discount_category_items);
     }
 
     Ext.Ajax.request({
