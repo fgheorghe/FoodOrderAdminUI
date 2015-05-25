@@ -33,6 +33,73 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createStore = function() {
     } );
 }
 
+FOBO.ui.prototype.frontEndDiscounts.prototype.showBundleDiscountWindow = function(record) {
+    var form = Ext.create('Ext.form.Panel', {
+        defaultType: 'textfield',
+        frame: false,
+        border: false,
+        items: [{
+            fieldLabel: 'Name',
+            allowBlank: false,
+            name: 'discount_name',
+            labelAlign: 'right',
+            value: record ? record.discount_name : ""
+        },{
+            fieldLabel: 'Total Price',
+            allowBlank: false,
+            name: 'order_amount',
+            labelAlign: 'right',
+            value: record ? record.value : ""
+        }]
+    });
+
+    var win = Ext.create('Ext.window.Window', {
+        title: 'Bundle of dishes: 1 item of each selected category for a fixed total',
+        modal: true
+        ,bodyPadding: 5
+        ,height: 150
+        ,width: 490
+        ,layout: 'fit'
+        ,items: [form]
+        ,buttons: [
+            {
+                text: 'Cancel',
+                handler: function() {
+                    win.close();
+                }.bind( this )
+            }, {
+                text: record ? 'Update' : 'Add',
+                handler: function() {
+                    if ( form.getForm().isValid() ) {
+                        if (!record) {
+                            this.createOrUpdateDiscount(
+                                win,
+                                4,
+                                {
+                                    discount_name: form.getForm().findField('discount_name').getValue(),
+                                    value: form.getForm().findField('order_amount').getValue()
+                                }
+                            );
+                        } else {
+                            this.createOrUpdateDiscount(
+                                win,
+                                4,
+                                {
+                                    discount_name: form.getForm().findField('discount_name').getValue(),
+                                    value: form.getForm().findField('order_amount').getValue()
+                                },
+                                record.id
+                            );
+                        }
+                    }
+                }.bind( this )
+            }
+        ]
+    });
+
+    win.show();
+}
+
 FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = function(record, optional) {
     var form = Ext.create('Ext.form.Panel', {
         defaultType: 'textfield',
@@ -268,27 +335,27 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
             },
             items: [
                 {
-                    boxLabel: 'Percent off on all items',
+                    boxLabel: 'Percent off on all items.',
                     name: 'discount_type',
                     inputValue: 0,
                     id: 'discount_type_0'
                 }, {
-                    boxLabel: 'Optional percent off on all items',
+                    boxLabel: 'Optional percent off on all items.',
                     name: 'discount_type',
                     inputValue: 3,
                     id: 'discount_type_3'
                 }, {
-                    boxLabel: 'Free item if order amount over',
+                    boxLabel: 'Free item if order amount over.',
                     name: 'discount_type',
                     inputValue: 1,
                     id: 'discount_type_1'
                 }, {
-                    boxLabel: '% off on one category item if order amount over',
+                    boxLabel: '% off on one category item if order amount over.',
                     name: 'discount_type',
                     inputValue: 2,
                     id: 'discount_type_2'
                 }, {
-                    boxLabel: 'Bundle of dishes: 1 item of each selected category for a fixed total',
+                    boxLabel: 'Bundle of dishes: 1 item of each selected category for a fixed total.',
                     name: 'discount_type',
                     inputValue: 4,
                     id: 'discount_type_4'
@@ -332,7 +399,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
                         this.showPercentOffOnAllItemsWindow(null, true);
                         win.close();
                     } else if (discountType4.getValue() === true) {
-                        this.showFreeItemDiscountWindow();
+                        this.showBundleDiscountWindow();
                         win.close();
                     }
                 }.bind( this )
@@ -378,6 +445,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                     break;
                 case 3:
                     this.showPercentOffOnAllItemsWindow(selection[0].raw, true);
+                    break;
+                case 4:
+                    this.showBundleDiscountWindow(selection[0].raw);
                     break;
                 default:
                     // Do nothing.
@@ -431,6 +501,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                             case 3:
                                 return "The customer can choose this type of discount.";
                                 break;
+                            case 4:
+                                return "1 item of each selected category for a fixed total.";
+                                break;
                             default:
                                 return "Unknown discount type";
                                 break;
@@ -443,6 +516,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                                 break;
                             case 3:
                                 return "Customers are given a " + values.value + "% discount on website orders.";
+                                break;
+                            case 4:
+                                return "Selecting 1 item from each category will total to: " + values.value;
                                 break;
                             case 1:
                                 return "Customer gets a free " + values.discount_item_name + " on orders over " + values.value + " GBP.";
@@ -465,6 +541,9 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                             break;
                         case 1:
                             return "Free item with order amount over.";
+                            break;
+                        case 4:
+                            return "Bundle of dishes: 1 item of each selected category for a fixed total.";
                             break;
                         default:
                             return "Unknown discount type.";
