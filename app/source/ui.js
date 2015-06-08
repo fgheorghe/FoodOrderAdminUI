@@ -119,6 +119,9 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
         case "barclays-payment-settings":
             componentName = "barclaysPaymentSettings";
             break;
+        case "sms-notification-settings":
+            componentName = "SMSNotificationSettings";
+            break;
         case "logout":
             this.doLogout();
             // Stop execution, this button is handled localy.
@@ -183,6 +186,10 @@ FOBO.ui.prototype.createMenuPanel = function() {
             }, {
                 text: "Payment Settings",
                 role: 'barclays-payment-settings',
+                leaf: true
+            }, {
+                text: "SMS Notification Settings",
+                role: 'sms-notification-settings',
                 leaf: true
             }, {
                 text: "Printer Activity",
