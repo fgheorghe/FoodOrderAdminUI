@@ -44,6 +44,10 @@ FOBO.ui.prototype.orders.prototype.refreshData = function() {
     this.phoneNumberSearchField.setValue();
     this.referenceSearchField.setValue();
 
+    this.cancelOrderButton.setDisabled(true);
+    this.acceptOrderButton.setDisabled(true);
+    this.rejectOrderButton.setDisabled(true);
+
     // Reload data.
     this.panel.getStore().load();
 }
@@ -816,6 +820,132 @@ FOBO.ui.prototype.orders.prototype.searchOrders = function() {
 }
 
 /**
+ * Method used for accepting an order.
+ * @function
+ */
+FOBO.ui.prototype.orders.prototype.acceptOrder = function() {
+    if ( !this.loadMask ) {
+        // Create a load mask to be shared.
+        this.loadMask = new Ext.LoadMask( this.panel.getEl(), { msg:"Please wait..."} );
+    }
+
+    // Prepare data.
+    var selection = this.panel.getSelectionModel().getSelection()[0],
+        order_id = selection.raw.id;
+
+    // TODO: Load default delivery time.
+    var deliveryTimeCombo = Ext.create('Ext.form.field.ComboBox', {
+        fieldLabel: 'Delivery Time (Minutes)',
+        displayField: 'time',
+        labelWidth: 150,
+        allowBlank: false,
+        store: Ext.create('Ext.data.Store', {
+            fields: [
+                {type: 'string', name: 'time'}
+            ],
+            data: [
+                { "time": "10" },
+                { "time": "20" },
+                { "time": "30" },
+                { "time": "40" },
+                { "time": "50" },
+                { "time": "60" }
+            ]
+        }),
+        editable: false,
+        queryMode: 'local'
+    });
+
+    var deliveryTimeForm = Ext.create('Ext.form.Panel', {
+        items: deliveryTimeCombo,
+        border: false,
+        frame: false
+    });
+
+    var win = Ext.create('Ext.window.Window', {
+        title: 'Accept Order: Delivery Time',
+        modal: true,
+        height: 120,
+        width: 350,
+        bodyPadding: 5,
+        maximizable: false,
+        resizable: false,
+        items: [ deliveryTimeForm ],
+        buttons: [
+            {
+                text: 'Accept',
+                handler: function() {
+                    if (deliveryTimeForm.isValid()) {
+                        win.hide();
+                        Ext.Ajax.request({
+                            url: '/api/order/' + order_id + '/accept/',
+                            method: 'POST',
+                            success: function(response,opts) {
+                                this.refreshData();
+                                this.loadMask.hide();
+                            }.bind( this )
+                            ,failure: function(response, opts) {
+                                // TODO: Implement.
+                                console.log('server-side failure with status code ' + response.status);
+                                this.loadMask.hide();
+                            }.bind( this )
+                        });
+                    }
+                }.bind( this )
+            },
+            {
+                text: 'Cancel',
+                handler: function() {
+                    win.close();
+                }.bind( this )
+            }
+        ]
+    });
+
+    win.show();
+}
+
+/**
+ * Method used for rejecting an order.
+ * @function
+ */
+FOBO.ui.prototype.orders.prototype.rejectOrder = function() {
+    if ( !this.loadMask ) {
+        // Create a load mask to be shared.
+        this.loadMask = new Ext.LoadMask( this.panel.getEl(), { msg:"Please wait..."} );
+    }
+
+    // Prepare data.
+    var selection = this.panel.getSelectionModel().getSelection()[0],
+        order_id = selection.raw.id;
+
+    Ext.Msg.show( {
+        title:'Reject order?',
+        msg: 'Continue order rejection?',
+        buttons: Ext.Msg.YESNO,
+        icon: Ext.Msg.WARNING,
+        fn: function( btn ) {
+            if ( btn === 'yes' ) {
+                this.loadMask.show();
+                Ext.Ajax.request({
+                    url: '/api/order/' + order_id + '/reject/',
+                    method: 'POST',
+                    success: function(response,opts) {
+                        this.refreshData();
+                        this.loadMask.hide();
+                    }.bind( this )
+                    ,failure: function(response, opts) {
+                        // TODO: Implement.
+                        console.log('server-side failure with status code ' + response.status);
+                        this.loadMask.hide();
+                    }.bind( this )
+                });
+            }
+        }.bind( this )
+    } );
+}
+
+/**
  * Method used for reprinting an order.
  * @function
  */
@@ -1041,6 +1171,20 @@ FOBO.ui.prototype.orders.prototype.init = function() {
         handler: this.reprintOrder.bind( this )
     } );
 
+    this.acceptOrderButton = Ext.create( 'Ext.button.Button', {
+        type: 'button',
+        text: 'Accept Order',
+        disabled: true,
+        handler: this.acceptOrder.bind( this )
+    } );
+
+    this.rejectOrderButton = Ext.create( 'Ext.button.Button', {
+        type: 'button',
+        text: 'Reject Order',
+        disabled: true,
+        handler: this.rejectOrder.bind( this )
+    } );
+
     // Prepare search box stores.
     this.createComboStores();
 
@@ -1188,6 +1332,14 @@ FOBO.ui.prototype.orders.prototype.init = function() {
                     this.cancelOrderButton.setDisabled( true );
                 }
 
+                if (record.data.status === 0) {
+                    this.acceptOrderButton.setDisabled(false);
+                    this.rejectOrderButton.setDisabled(false);
+                } else {
+                    this.acceptOrderButton.setDisabled(true);
+                    this.rejectOrderButton.setDisabled(true);
+                }
+
                 if (record.data.order_type === 1 || record.data.order_type === 2 || record.data.order_type === 3) {
                     this.reprintOrderButton.setDisabled(false);
                 } else {
@@ -1208,7 +1360,11 @@ FOBO.ui.prototype.orders.prototype.init = function() {
                     text: 'Refresh',
                     type: 'button',
                     handler: this.refreshData.bind( this )
-                }, this.cancelOrderButton, this.reprintOrderButton ]
+                }, this.cancelOrderButton
+                    , this.reprintOrderButton
+                    , this.acceptOrderButton
+                    , this.rejectOrderButton
+                ]
             },
             {
                 xtype: 'toolbar'
