@@ -880,6 +880,9 @@ FOBO.ui.prototype.orders.prototype.acceptOrder = function() {
                         Ext.Ajax.request({
                             url: '/api/order/' + order_id + '/accept/',
                             method: 'POST',
+                            params: {
+                                delivery_time: deliveryTimeCombo.getValue()
+                            },
                             success: function(response,opts) {
                                 this.refreshData();
                                 this.loadMask.hide();

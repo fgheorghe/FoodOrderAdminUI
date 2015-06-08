@@ -38,13 +38,14 @@ FOBO.ui.prototype.SMSNotificationSettings.prototype.init = function() {
             name: 'sms_order_notification_recipient',
             allowBlank: false,
             labelAlign: 'right',
-            tabIndex: 2,
+            tabIndex: 3,
             labelWidth: 240
         }, {
             xtype: 'checkboxfield',
             fieldLabel: 'Enable SMS Notifications',
             labelAlign: 'right',
             labelWidth: 240,
+            tabIndex: 4,
             name: "enable_sms_notifications_on_online_orders"
         } ]
         ,buttons: [ {
@@ -54,7 +55,7 @@ FOBO.ui.prototype.SMSNotificationSettings.prototype.init = function() {
             }.bind( this )
         }, {
             text: 'Submit',
-            tabIndex: 4,
+            tabIndex: 5,
             handler: function() {
                 this.submitFormData();
             }.bind( this )

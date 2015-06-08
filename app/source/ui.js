@@ -122,6 +122,9 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
         case "sms-notification-settings":
             componentName = "SMSNotificationSettings";
             break;
+        case "email-templates":
+            componentName = "emailTemplates";
+            break;
         case "logout":
             this.doLogout();
             // Stop execution, this button is handled localy.
@@ -190,6 +193,10 @@ FOBO.ui.prototype.createMenuPanel = function() {
             }, {
                 text: "SMS Notification Settings",
                 role: 'sms-notification-settings',
+                leaf: true
+            }, {
+                text: "Email Templates",
+                role: 'email-templates',
                 leaf: true
             }, {
                 text: "Printer Activity",
