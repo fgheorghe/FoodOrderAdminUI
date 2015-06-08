@@ -35,7 +35,7 @@ FOBO.ui.prototype.SMSNotificationSettings.prototype.init = function() {
             labelWidth: 240
         }, {
             xtype: 'checkboxfield',
-            fieldLabel: 'Enable SMS Notifications on Online Orders',
+            fieldLabel: 'Enable SMS Notifications',
             labelAlign: 'right',
             labelWidth: 240,
             name: "enable_sms_notifications_on_online_orders"
