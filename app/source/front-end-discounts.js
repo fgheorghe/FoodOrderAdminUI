@@ -33,135 +33,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createStore = function() {
     } );
 }
 
-FOBO.ui.prototype.frontEndDiscounts.prototype.showBundleDiscountWindow = function(record) {
-    var form = Ext.create('Ext.form.Panel', {
-            defaultType: 'textfield',
-            frame: false,
-            border: false,
-            region: 'north',
-            bodyPadding: 5,
-            height: 65,
-            items: [{
-                fieldLabel: 'Name',
-                allowBlank: false,
-                name: 'discount_name',
-                labelAlign: 'right',
-                value: record ? record.discount_name : ""
-            },{
-                fieldLabel: 'Total Price',
-                allowBlank: false,
-                name: 'order_amount',
-                labelAlign: 'right',
-                value: record ? record.value : ""
-            }]
-        }),
-        // Upon rendering, ids found here will results in checked rows (if doing an edit).
-        selectedCategories = [],
-        selectedCategoryIds = {},
-        categoryStore = Ext.create('Ext.data.Store', {
-            fields: [ 'id', 'category_name' ],
-            data : Common.FoodMenu.MenuItemCategories
-        }),
-        sm = Ext.create('Ext.selection.CheckboxModel'),
-        categoryGridPanel = Ext.create('Ext.grid.Panel', {
-            store: categoryStore,
-            selModel: sm,
-            region: 'center',
-            columns: [
-                {text: "Category", flex: 1, dataIndex: 'category_name'}
-            ],
-            columnLines: true,
-            frame: false,
-            title: 'Menu Categories',
-            listeners: {
-                afterrender: function() {
-                    var selectionModel = categoryGridPanel.getSelectionModel();
-                    // Select all configured categories items.
-                    categoryGridPanel.getStore().each(function(record) {
-                        if (typeof selectedCategoryIds[record.data.id] !== "undefined") {
-                            selectionModel.select(record, true);
-                        }
-                    }, this);
-                }
-            }
-        });
-
-    // Prepare selected categories -> if editing and if any.
-    if (record) {
-        try {
-            selectedCategories = Ext.JSON.decode(record.discount_category_items);
-        } catch (Ex) {
-            // Do nothing.
-        }
-        // If it can't be decoded, then set to an empty array.
-        if (selectedCategories === null) {
-            selectedCategories = [];
-        }
-        // Now extract ids.
-        _.each(selectedCategories, function(element) {
-            selectedCategoryIds[element.id] = true;
-        });
-    }
-
-    var win = Ext.create('Ext.window.Window', {
-        title: 'Bundle of dishes: 1 item of each selected category for a fixed total',
-        modal: true
-        ,height: 400
-        ,width: 490
-        ,layout: 'border'
-        ,items: [form, categoryGridPanel]
-        ,buttons: [
-            {
-                text: 'Cancel',
-                handler: function() {
-                    win.close();
-                }.bind( this )
-            }, {
-                text: record ? 'Update' : 'Add',
-                handler: function() {
-                    var selectedCategories = [],
-                        i,
-                        selection = categoryGridPanel.getView().getSelectionModel().getSelection();
-                    for (i = 0; i < selection.length; i++) {
-                        selectedCategories.push({
-                            id: selection[i].raw.id,
-                            category_name: selection[i].raw.category_name
-                        });
-                    }
-
-                    if (form.getForm().isValid()) {
-                        if (!record) {
-                            this.createOrUpdateDiscount(
-                                win,
-                                4,
-                                {
-                                    discount_name: form.getForm().findField('discount_name').getValue(),
-                                    value: form.getForm().findField('order_amount').getValue(),
-                                    discount_category_items: selectedCategories
-                                }
-                            );
-                        } else {
-                            this.createOrUpdateDiscount(
-                                win,
-                                4,
-                                {
-                                    discount_name: form.getForm().findField('discount_name').getValue(),
-                                    value: form.getForm().findField('order_amount').getValue(),
-                                    discount_category_items: selectedCategories
-                                },
-                                record.id
-                            );
-                        }
-                    }
-                }.bind( this )
-            }
-        ]
-    });
-
-    win.show();
-}
-
-FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = function(record, optional) {
+FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = function(record) {
     var form = Ext.create('Ext.form.Panel', {
         defaultType: 'textfield',
         frame: false,
@@ -188,7 +60,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
     });
 
     var win = Ext.create('Ext.window.Window', {
-        title: optional && optional === true ? 'Optional percent off on all items' : 'Percent off on all items',
+        title: 'Percent off on all items',
         modal: true
         ,bodyPadding: 5
         ,height: 150
@@ -208,7 +80,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
                         if (!record) {
                             this.createOrUpdateDiscount(
                                 win,
-                                optional && optional === true ? 3 : 0,
+                                0,
                                 {
                                     discount_name: form.getForm().findField('discount_name').getValue(),
                                     value: form.getForm().findField('discount_percent').getValue()
@@ -217,7 +89,7 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showPercentOffOnAllItemsWindow = f
                         } else {
                             this.createOrUpdateDiscount(
                                 win,
-                                optional && optional === true ? 3 : 0,
+                                0,
                                 {
                                     discount_name: form.getForm().findField('discount_name').getValue(),
                                     value: form.getForm().findField('discount_percent').getValue()
@@ -245,9 +117,6 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.createOrUpdateDiscount = function(
 
     if (discount_type === 1) {
         params.discount_item_id = properties.discount_item_id;
-    }
-    if (discount_type === 4) {
-        params.discount_category_items = Ext.JSON.encode(properties.discount_category_items);
     }
 
     Ext.Ajax.request({
@@ -399,30 +268,15 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
             },
             items: [
                 {
-                    boxLabel: 'Percent off on all items.',
+                    boxLabel: 'Percent off on all items',
                     name: 'discount_type',
                     inputValue: 0,
                     id: 'discount_type_0'
                 }, {
-                    boxLabel: 'Optional percent off on all items.',
-                    name: 'discount_type',
-                    inputValue: 3,
-                    id: 'discount_type_3'
-                }, {
-                    boxLabel: 'Free item if order amount over.',
+                    boxLabel: 'Free item if order amount over',
                     name: 'discount_type',
                     inputValue: 1,
                     id: 'discount_type_1'
-                }, {
-                    boxLabel: '% off on one category item if order amount over.',
-                    name: 'discount_type',
-                    inputValue: 2,
-                    id: 'discount_type_2'
-                }, {
-                    boxLabel: 'Bundle of dishes: 1 item of each selected category for a fixed total.',
-                    name: 'discount_type',
-                    inputValue: 4,
-                    id: 'discount_type_4'
                 }
             ]
         }]
@@ -431,8 +285,8 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
     var win = Ext.create('Ext.window.Window', {
         title: 'Choose discount type',
         modal: true,
-        width: 440,
-        height: 240,
+        width: 350,
+        height: 150,
         layout: 'fit',
         items: [form],
         buttons: [
@@ -445,25 +299,13 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.showAddDiscountWindow = function()
                 text: 'Add',
                 handler: function() {
                     var discountType0 = Ext.getCmp('discount_type_0'),
-                        discountType1 = Ext.getCmp('discount_type_1'),
-                        discountType2 = Ext.getCmp('discount_type_2'),
-                        discountType3 = Ext.getCmp('discount_type_3'),
-                        discountType4 = Ext.getCmp('discount_type_4');
+                        discountType1 = Ext.getCmp('discount_type_1');
 
                     if (discountType0.getValue() === true) {
                         this.showPercentOffOnAllItemsWindow();
                         win.close();
                     } else if (discountType1.getValue() === true) {
                         this.showFreeItemDiscountWindow();
-                        win.close();
-                    } else if (discountType2.getValue() === true) {
-                        this.showFreeItemDiscountWindow();
-                        win.close();
-                    } else if (discountType3.getValue() === true) {
-                        this.showPercentOffOnAllItemsWindow(null, true);
-                        win.close();
-                    } else if (discountType4.getValue() === true) {
-                        this.showBundleDiscountWindow();
                         win.close();
                     }
                 }.bind( this )
@@ -506,12 +348,6 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                     break;
                 case 1:
                     this.showFreeItemDiscountWindow(selection[0].raw);
-                    break;
-                case 3:
-                    this.showPercentOffOnAllItemsWindow(selection[0].raw, true);
-                    break;
-                case 4:
-                    this.showBundleDiscountWindow(selection[0].raw);
                     break;
                 default:
                     // Do nothing.
@@ -562,12 +398,6 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                             case 2:
                                 return "The customer can choose this type of discount.";
                                 break;
-                            case 3:
-                                return "The customer can choose this type of discount.";
-                                break;
-                            case 4:
-                                return "1 item of each selected category for a fixed total.";
-                                break;
                             default:
                                 return "Unknown discount type";
                                 break;
@@ -577,12 +407,6 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
                         switch (values.discount_type) {
                             case 0:
                                 return "All customers are given a " + values.value + "% discount on website orders.";
-                                break;
-                            case 3:
-                                return "Customers are given a " + values.value + "% discount on website orders.";
-                                break;
-                            case 4:
-                                return "Selecting 1 item from each category will total to: " + values.value;
                                 break;
                             case 1:
                                 return "Customer gets a free " + values.discount_item_name + " on orders over " + values.value + " GBP.";
@@ -598,19 +422,13 @@ FOBO.ui.prototype.frontEndDiscounts.prototype.init = function() {
             { header: 'Discount Type', dataIndex: 'discount_type', width: 300, renderer: function(value) {
                     switch (value) {
                         case 0:
-                            return "Percent off on all items.";
-                            break;
-                        case 3:
-                            return "Optional percent off on all items.";
+                            return "Percent off on all items";
                             break;
                         case 1:
-                            return "Free item with order amount over.";
-                            break;
-                        case 4:
-                            return "Bundle of dishes: 1 item of each selected category for a fixed total.";
+                            return "Free item with order amount over";
                             break;
                         default:
-                            return "Unknown discount type.";
+                            return "Unknown discount type";
                             break;
                     }
                 }
