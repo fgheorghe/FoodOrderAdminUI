@@ -34,6 +34,13 @@ FOBO.ui.prototype.SMSNotificationSettings.prototype.init = function() {
             tabIndex: 2,
             labelWidth: 240
         }, {
+            fieldLabel: 'SMS Recepient',
+            name: 'sms_order_notification_recipient',
+            allowBlank: false,
+            labelAlign: 'right',
+            tabIndex: 2,
+            labelWidth: 240
+        }, {
             xtype: 'checkboxfield',
             fieldLabel: 'Enable SMS Notifications',
             labelAlign: 'right',
@@ -94,6 +101,7 @@ FOBO.ui.prototype.SMSNotificationSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'sms_gateway_password').setValue( data.sms_gateway_password );
                 this.form.getForm().findField( 'sms_gateway_username').setValue( data.sms_gateway_username );
                 this.form.getForm().findField( 'enable_sms_notifications_on_online_orders').setValue( data.enable_sms_notifications_on_online_orders );
+                this.form.getForm().findField( 'sms_order_notification_recipient').setValue( data.sms_order_notification_recipient );
             }
 
             // Hide the load mask.
@@ -113,6 +121,7 @@ FOBO.ui.prototype.SMSNotificationSettings.prototype.submitFormData = function() 
         params: {
             sms_gateway_password: this.form.getForm().findField( 'sms_gateway_password').getValue(),
             sms_gateway_username: this.form.getForm().findField( 'sms_gateway_username').getValue(),
+	    sms_order_notification_recipient: this.form.getForm().findField('sms_order_notification_recipient').getValue(),
             enable_sms_notifications_on_online_orders: this.form.getForm().findField( 'enable_sms_notifications_on_online_orders').getValue() ? 1 : 0
         },
         success: function(){
