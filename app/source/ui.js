@@ -119,6 +119,9 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
         case "barclays-payment-settings":
             componentName = "barclaysPaymentSettings";
             break;
+        case "stripe-payment-settings":
+            componentName = "stripePaymentSettings";
+            break;
         case "sms-notification-settings":
             componentName = "SMSNotificationSettings";
             break;
@@ -187,8 +190,12 @@ FOBO.ui.prototype.createMenuPanel = function() {
                 role: 'front-end-settings',
                 leaf: true
             }, {
-                text: "Payment Settings",
+                text: "Barclays Payment Settings",
                 role: 'barclays-payment-settings',
+                leaf: true
+            }, {
+                text: "Stripe Payment Settings",
+                role: 'stripe-payment-settings',
                 leaf: true
             }, {
                 text: "SMS Notification Settings",

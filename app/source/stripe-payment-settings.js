@@ -5,14 +5,14 @@
 /**
  * @constructor Constructor for the settings class.
  */
-FOBO.ui.prototype.barclaysPaymentSettings = function() {
+FOBO.ui.prototype.stripePaymentSettings = function() {
     this.init();
 };
 
 /**
  * @function Initialises the object, by creating required panels and items.
  */
-FOBO.ui.prototype.barclaysPaymentSettings.prototype.init = function() {
+FOBO.ui.prototype.stripePaymentSettings.prototype.init = function() {
     // Form panel, hosting input fields.
     this.form = Ext.create( 'Ext.form.Panel', {
         defaultType: 'textfield',
@@ -20,25 +20,19 @@ FOBO.ui.prototype.barclaysPaymentSettings.prototype.init = function() {
         border: false,
         bodyPadding: 5,
         items: [ {
-            fieldLabel: 'Your Barclays Affiliation Name',
-            name: 'pspid',
+            fieldLabel: 'Secret Key',
+            name: 'stripe_secret_key',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 1,
             labelWidth: 240
         }, {
-            fieldLabel: 'SHA1 Signature',
-            name: 'sha1',
+            fieldLabel: 'Publishable Key',
+            name: 'stripe_publishable_key',
             allowBlank: false,
             labelAlign: 'right',
             tabIndex: 2,
             labelWidth: 240
-        }, {
-            xtype: 'checkboxfield',
-            fieldLabel: 'Live payment system',
-            labelAlign: 'right',
-            labelWidth: 240,
-            name: "live_payment_system"
         } ]
         ,buttons: [ {
             text: 'Reset',
@@ -56,7 +50,7 @@ FOBO.ui.prototype.barclaysPaymentSettings.prototype.init = function() {
 
     // Panel itself.
     this.panel = Ext.create( 'Ext.panel.Panel', {
-        title: "Barclays Payment Settings"
+        title: "Stripe Payment Settings"
         ,items: [ this.form ]
         ,layout: 'fit'
         ,listeners: {
@@ -65,7 +59,7 @@ FOBO.ui.prototype.barclaysPaymentSettings.prototype.init = function() {
     } );
 }
 
-FOBO.ui.prototype.barclaysPaymentSettings.prototype.loadSettings = function() {
+FOBO.ui.prototype.stripePaymentSettings.prototype.loadSettings = function() {
     // Create a load mask, to let the user know
     // that we are fetching data.
     this.loadMask = new Ext.LoadMask( this.panel.getEl(), { msg:"Please wait..."} );
@@ -76,10 +70,10 @@ FOBO.ui.prototype.barclaysPaymentSettings.prototype.loadSettings = function() {
     this.fetchSettings();
 }
 
-FOBO.ui.prototype.barclaysPaymentSettings.prototype.fetchSettings = function() {
+FOBO.ui.prototype.stripePaymentSettings.prototype.fetchSettings = function() {
     // Create AJAX request object, and get form data.
     Ext.Ajax.request({
-        url: '/api/barclays-payment-settings/',
+        url: '/api/stripe-payment-settings/',
         success: function(response){
             var data;
 
@@ -91,9 +85,8 @@ FOBO.ui.prototype.barclaysPaymentSettings.prototype.fetchSettings = function() {
             }
 
             if ( data ) {
-                this.form.getForm().findField( 'pspid').setValue( data.pspid );
-                this.form.getForm().findField( 'sha1').setValue( data.sha1 );
-                this.form.getForm().findField( 'live_payment_system').setValue( data.live_payment_system )
+                this.form.getForm().findField( 'stripe_secret_key').setValue( data.stripe_secret_key );
+                this.form.getForm().findField( 'stripe_publishable_key').setValue( data.stripe_publishable_key );
             }
 
             // Hide the load mask.
@@ -103,17 +96,16 @@ FOBO.ui.prototype.barclaysPaymentSettings.prototype.fetchSettings = function() {
     });
 }
 
-FOBO.ui.prototype.barclaysPaymentSettings.prototype.submitFormData = function() {
+FOBO.ui.prototype.stripePaymentSettings.prototype.submitFormData = function() {
     this.loadMask.show();
 
     // Create AJAX request object, and send form data.
     Ext.Ajax.request({
-        url: '/api/barclays-payment-settings/',
+        url: '/api/stripe-payment-settings/',
         method: 'POST',
         params: {
-            pspid: this.form.getForm().findField( 'pspid').getValue(),
-            sha1: this.form.getForm().findField( 'sha1').getValue(),
-            live_payment_system: this.form.getForm().findField( 'live_payment_system').getValue() ? 1 : 0
+            stripe_secret_key: this.form.getForm().findField( 'stripe_secret_key').getValue(),
+            stripe_publishable_key: this.form.getForm().findField( 'stripe_publishable_key').getValue()
         },
         success: function(){
             this.loadMask.hide();
