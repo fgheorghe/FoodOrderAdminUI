@@ -13,6 +13,23 @@ FOBO.ui.prototype.restaurantSettings = function() {
  * @function Initialises the object, by creating required panels and items.
  */
 FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
+    this.orderTypeComboStore = Ext.create('Ext.data.Store', {
+        fields: [ 'id', 'name' ],
+        data : Common.Settings.PaymentGateways
+    } );
+
+    this.paymentGatewayCombo =  Ext.create('Ext.form.ComboBox', {
+        fieldLabel: 'Payment Gateway',
+        store: this.orderTypeComboStore,
+        name: 'payment_gateway',
+        queryMode: 'local',
+        displayField: 'name',
+        valueField: 'id',
+        editable: false,
+        labelAlign: 'right',
+        labelWidth: 250
+    });
+
     // Form panel, hosting input fields.
     this.form = Ext.create( 'Ext.form.Panel', {
         defaultType: 'textfield',
@@ -84,7 +101,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.init = function() {
             labelAlign: 'right',
             labelWidth: 250,
             name: "disable_online_payments"
-        }, {
+        }, this.paymentGatewayCombo, {
             xtype: 'checkboxfield',
             fieldLabel: 'Allow Payment on Delivery or Collection for Unverified Users',
             labelAlign: 'right',
@@ -266,6 +283,7 @@ FOBO.ui.prototype.restaurantSettings.prototype.fetchSettings = function() {
                 this.form.getForm().findField( 'minimum_website_order_value').setValue( data.minimum_website_order_value );
                 this.form.getForm().findField( 'site_contact_recipient_email').setValue( data.site_contact_recipient_email );
                 this.form.getForm().findField( 'allow_unverified_pod_or_col_payment').setValue( data.allow_unverified_pod_or_col_payment );
+                this.form.getForm().findField( 'payment_gateway').setValue( data.payment_gateway );
             }
 
             // Hide the load mask.
@@ -306,7 +324,8 @@ FOBO.ui.prototype.restaurantSettings.prototype.submitFormData = function() {
             order_confirmation_from: this.form.getForm().findField( 'order_confirmation_from').getValue(),
             minimum_website_order_value: this.form.getForm().findField( 'minimum_website_order_value').getValue(),
             site_contact_recipient_email: this.form.getForm().findField( 'site_contact_recipient_email').getValue(),
-            allow_unverified_pod_or_col_payment: this.form.getForm().findField( 'allow_unverified_pod_or_col_payment').getValue() ? 1 : 0
+            allow_unverified_pod_or_col_payment: this.form.getForm().findField( 'allow_unverified_pod_or_col_payment').getValue() ? 1 : 0,
+            payment_gateway: this.form.getForm().findField( 'payment_gateway').getValue()
         },
         success: function(){
             this.loadMask.hide();

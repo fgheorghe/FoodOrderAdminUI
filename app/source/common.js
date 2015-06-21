@@ -16,6 +16,13 @@ var Common = {
             { id: 5, type_name: 'Banner' }
         ]
     },
+    Settings: {
+        PaymentGateways: [
+            { id: 0, name: "None" },
+            { id: 1, name: "Stripe" },
+            { id: 2, name: "Barclays" }
+        ]
+    },
     FoodMenu: {
         // TODO: Load from database, and add proper types.
         // From table menu_item_sizes, used by combo stores.
