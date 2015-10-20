@@ -186,7 +186,7 @@ FOBO.ui.prototype.createMenuPanel = function() {
                 text: "Front End Settings",
                 role: 'front-end-settings',
                 leaf: true
-            } {
+            }, {
                 text: "Stripe Payment Settings",
                 role: 'stripe-payment-settings',
                 leaf: true
