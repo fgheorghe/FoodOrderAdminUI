@@ -949,46 +949,6 @@ FOBO.ui.prototype.orders.prototype.rejectOrder = function() {
 }
 
 /**
- * Method used for reprinting an order.
- * @function
- */
-FOBO.ui.prototype.orders.prototype.reprintOrder = function() {
-    if ( !this.loadMask ) {
-        // Create a load mask to be shared.
-        this.loadMask = new Ext.LoadMask( this.panel.getEl(), { msg:"Please wait..."} );
-    }
-
-    // Prepare data.
-    var selection = this.panel.getSelectionModel().getSelection()[0],
-        order_id = selection.raw.id;
-
-    Ext.Msg.show( {
-        title:'Reprint order?',
-        msg: 'Reprinting an order using the Web Interface will send a customer notification email. If this is not the intention, please use the printer reprint function. Continue?',
-        buttons: Ext.Msg.YESNO,
-        icon: Ext.Msg.WARNING,
-        fn: function( btn ) {
-            if ( btn === 'yes' ) {
-                this.loadMask.show();
-                Ext.Ajax.request({
-                    url: '/api/order/' + order_id + '/reprint/',
-                    method: 'POST',
-                    success: function(response,opts) {
-                        this.refreshData();
-                        this.loadMask.hide();
-                    }.bind( this )
-                    ,failure: function(response, opts) {
-                        // TODO: Implement.
-                        console.log('server-side failure with status code ' + response.status);
-                        this.loadMask.hide();
-                    }.bind( this )
-                });
-            }
-        }.bind( this )
-    } );
-}
-
-/**
  * Method used for canceling an order.
  * @function
  */
@@ -1101,7 +1061,6 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             'payment_status',
             'customer_name',
             'customer_phone_number',
-            'printer_message',
             'delivery_type',
             'delivery_time',
             'discount',
@@ -1165,13 +1124,6 @@ FOBO.ui.prototype.orders.prototype.init = function() {
         text: 'Cancel Order',
         disabled: true,
         handler: this.cancelOrder.bind( this )
-    } );
-
-    this.reprintOrderButton = Ext.create( 'Ext.button.Button', {
-        type: 'button',
-        text: 'Reprint Order',
-        disabled: true,
-        handler: this.reprintOrder.bind( this )
     } );
 
     this.acceptOrderButton = Ext.create( 'Ext.button.Button', {
@@ -1317,9 +1269,6 @@ FOBO.ui.prototype.orders.prototype.init = function() {
             { header: 'Delivery Time', dataIndex: 'delivery_time', width: 40, renderer: function( value ) {
                 return ( value === "0000-00-00 00:00:00" ) ? "" : value;
             } },
-            { header: 'Printer Message', dataIndex: 'printer_message', width: 180,
-                renderer: Util.textColumnRenderer
-            },
             { header: 'Notes', dataIndex: 'notes', width: 180,
                 renderer: Util.textColumnRenderer
             }
@@ -1342,12 +1291,6 @@ FOBO.ui.prototype.orders.prototype.init = function() {
                     this.acceptOrderButton.setDisabled(true);
                     this.rejectOrderButton.setDisabled(true);
                 }
-
-                if (record.data.order_type === 1 || record.data.order_type === 2 || record.data.order_type === 3) {
-                    this.reprintOrderButton.setDisabled(false);
-                } else {
-                    this.reprintOrderButton.setDisabled(true);
-                }
             }.bind( this )
         },
         dockedItems: [
@@ -1364,7 +1307,6 @@ FOBO.ui.prototype.orders.prototype.init = function() {
                     type: 'button',
                     handler: this.refreshData.bind( this )
                 }, this.cancelOrderButton
-                    , this.reprintOrderButton
                     , this.acceptOrderButton
                     , this.rejectOrderButton
                 ]

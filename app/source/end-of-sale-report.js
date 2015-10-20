@@ -36,7 +36,6 @@ FOBO.ui.prototype.eosr.prototype.init = function() {
             'payment_status',
             'customer_name',
             'customer_phone_number',
-            'printer_message',
             'delivery_type',
             'delivery_time',
             'discount',
@@ -121,9 +120,7 @@ FOBO.ui.prototype.eosr.prototype.init = function() {
             },
             { header: 'Delivery Time', dataIndex: 'delivery_time', width: 40, renderer: function( value ) {
                 return ( value === "0000-00-00 00:00:00" ) ? "" : value;
-            } },{ header: 'Printer Message', dataIndex: 'printer_message', width: 180,
-                renderer: Util.textColumnRenderer
-            },
+            } },
             { header: 'Notes', dataIndex: 'notes', width: 180,
                 renderer: Util.textColumnRenderer
             }

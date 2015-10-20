@@ -69,7 +69,7 @@ var Common = {
         // Used only by rendereres
         OrderStatuses: [
             { id: 0, status: "Pending" },
-            { id: 1, status: "Printer" },
+            { id: 1, status: "Point Of Sale" },
             { id: 2, status: "Accepted" },
             { id: 3, status: "Rejected" },
             { id: 99, status: "Error" }

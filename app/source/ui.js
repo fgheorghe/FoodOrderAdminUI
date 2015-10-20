@@ -92,12 +92,6 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
         case "front-end-discounts":
             componentName = "frontEndDiscounts";
             break;
-        case "printer-user-settings":
-            componentName = "printerUserSettings";
-            break;
-        case "printer-activity":
-            componentName = "printerActivity";
-            break;
         case "api-access-token-settings":
             componentName = "apiAccessTokenSettings";
             break;
@@ -197,10 +191,6 @@ FOBO.ui.prototype.createMenuPanel = function() {
             }, {
                 text: "Email Templates",
                 role: 'email-templates',
-                leaf: true
-            }, {
-                text: "Printer Users",
-                role: 'printer-user-settings',
                 leaf: true
             }, {
                 text: "Users",
