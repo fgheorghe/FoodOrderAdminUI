@@ -199,10 +199,6 @@ FOBO.ui.prototype.createMenuPanel = function() {
                 role: 'email-templates',
                 leaf: true
             }, {
-                text: "Printer Activity",
-                role: 'printer-activity',
-                leaf: true
-            }, {
                 text: "Printer Users",
                 role: 'printer-user-settings',
                 leaf: true
