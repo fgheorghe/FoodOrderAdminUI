@@ -116,9 +116,6 @@ FOBO.ui.prototype.treeNodeClickHandler = function( panel, record, index, e, eOpt
         case "change-password":
             componentName = "changePassword";
             break;
-        case "barclays-payment-settings":
-            componentName = "barclaysPaymentSettings";
-            break;
         case "stripe-payment-settings":
             componentName = "stripePaymentSettings";
             break;
@@ -189,11 +186,7 @@ FOBO.ui.prototype.createMenuPanel = function() {
                 text: "Front End Settings",
                 role: 'front-end-settings',
                 leaf: true
-            }, {
-                text: "Barclays Payment Settings",
-                role: 'barclays-payment-settings',
-                leaf: true
-            }, {
+            } {
                 text: "Stripe Payment Settings",
                 role: 'stripe-payment-settings',
                 leaf: true

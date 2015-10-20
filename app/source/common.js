@@ -19,8 +19,7 @@ var Common = {
     Settings: {
         PaymentGateways: [
             { id: 0, name: "None" },
-            { id: 1, name: "Stripe" },
-            { id: 2, name: "Barclays" }
+            { id: 1, name: "Stripe" }
         ]
     },
     FoodMenu: {
