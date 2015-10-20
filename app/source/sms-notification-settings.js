@@ -34,7 +34,7 @@ FOBO.ui.prototype.SMSNotificationSettings.prototype.init = function() {
             tabIndex: 2,
             labelWidth: 240
         }, {
-            fieldLabel: 'SMS Recepient',
+            fieldLabel: 'SMS Recipient',
             name: 'sms_order_notification_recipient',
             allowBlank: false,
             labelAlign: 'right',
